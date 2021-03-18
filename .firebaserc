@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "mygameplan-4de84"
+  },
+  "targets": {
+    "mygameplan-4de84": {
+      "hosting": {
+        "app1": [
+          "hodgson-fitness"
+        ]
+      }
+    }
+  }
+}
