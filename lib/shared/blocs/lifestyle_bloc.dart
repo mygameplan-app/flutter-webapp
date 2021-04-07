@@ -36,7 +36,7 @@ class LifestyleBloc {
           LifestyleDay day = LifestyleDay.fromJson(d.data())..id = d.id;
           program.lifestyleDays.add(day);
           await d.reference
-              .collection('meals')
+              .collection('items')
               .orderBy('order')
               .get()
               .then((lifestyleDocs) async {

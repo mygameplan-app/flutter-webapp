@@ -151,7 +151,7 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
                 height: 100,
                 width: 300,
                 child: LongButton(
-                  text: 'Add Lifestyle Program',
+                  text: 'Add Lifestyle Category',
                   icon: Icons.add,
                   color: Colors.red,
                   textColor: Colors.white,
@@ -207,7 +207,7 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Lifestyle Programs'),
+        title: Text('Edit Lifestyle Categorys'),
         centerTitle: true,
         leading: BackButton(
           onPressed: () => Navigator.pop(context),
