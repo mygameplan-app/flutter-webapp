@@ -1,48 +1,43 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_day_picsbloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
-import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
-class LifestylePopup extends StatefulWidget {
-  final LifestyleProgram lifestyleProgram;
-  final LifestyleDay lifestyleDay;
-  final LifestyleItem item;
+class LifestyleDaysPopup extends StatefulWidget {
+  final LifestyleDay lifestyleday;
   final int count;
   final PopUpFunctions popUpFunctions;
+  final String id;
+  LifestyleDaysPopup(
+      {this.lifestyleday,
+        @required this.count,
+        @required this.popUpFunctions,
+        @required this.id});
 
-  LifestylePopup({
-    this.item,
-    @required this.lifestyleProgram,
-    @required this.lifestyleDay,
-    @required this.count,
-    @required this.popUpFunctions,
-  });
-
-  _LifestylePopupState createState() => _LifestylePopupState();
+  MyLifestyleDaysPopup createState() => MyLifestyleDaysPopup();
 }
 
-class _LifestylePopupState extends State<LifestylePopup> {
+class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
   String text = 'Only .png and .jpeg files allowed.';
-  String videoUrl = "";
+
   String title = "";
-  String subtitle = "";
+  String description = "";
   bool isLoading = false;
-  bool imageChanged = false;
+  DaysPicsBloc daysPicsBloc = DaysPicsBloc();
   Image image;
+  bool imageChanged = false;
 
   final titleController = TextEditingController();
-  final subtitleController = TextEditingController();
-  final videoUrlController = TextEditingController();
+  final descriptionController = TextEditingController();
 
-  ImageUtils imageUtils = ImageUtils();
-
+  LifestyleBloc lifestyleBloc = LifestyleBloc();
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -54,12 +49,11 @@ class _LifestylePopupState extends State<LifestylePopup> {
 
   _setUpFunction() {
     if (widget.popUpFunctions == PopUpFunctions.edit) {
-      image = widget.item.imageUrl == null
-          ? null
-          : Image.network(widget.item.imageUrl);
-      titleController.text = widget.item.title;
-      subtitleController.text = widget.item.subtitle;
-      videoUrlController.text = widget.item.videoUrl;
+      image = Image.network(widget.lifestyleday.imageUrl);
+      daysPicsBloc.image = image;
+      titleController.text = widget.lifestyleday.title;
+
+      descriptionController.text = widget.lifestyleday.subtitle;
     }
   }
 
@@ -68,8 +62,8 @@ class _LifestylePopupState extends State<LifestylePopup> {
         barrierDismissible: false,
         context: (context),
         builder: (
-          BuildContext context,
-        ) {
+            BuildContext context,
+            ) {
           return AlertDialog(
             backgroundColor: Colors.black26,
             content: Container(
@@ -110,8 +104,8 @@ class _LifestylePopupState extends State<LifestylePopup> {
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
         title: widget.popUpFunctions == PopUpFunctions.add
-            ? "Add Lifestyle Item"
-            : "Edit Lifestyle Item",
+            ? "Add Lifestyle Day"
+            : "Edit Lifestyle Day",
         content: StatefulBuilder(builder: (context, setState) {
           return Container(
             width: MediaQuery.of(context).size.width * multiplier(),
@@ -123,36 +117,30 @@ class _LifestylePopupState extends State<LifestylePopup> {
                   ),
                   controller: titleController,
                 ),
-                TextField(
+                TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Subtitle',
+                    labelText: 'Description',
                   ),
-                  controller: subtitleController,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Video URL',
-                  ),
-                  controller: videoUrlController,
+                  controller: descriptionController,
                 ),
                 image != null
                     ? Container(
-                        padding: EdgeInsets.only(top: 15),
-                        child: image,
-                        width: 150,
-                        height: 150,
-                      )
+                  padding: EdgeInsets.only(top: 15),
+                  child: image,
+                  width: 150,
+                  height: 150,
+                )
                     : Container(),
                 Container(
                   height: 40,
                   width: 140,
                   padding: EdgeInsets.only(top: 15),
                   decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await imageUtils.uploadImage();
+                        image = await NutritionDaysPicsBloc().uploadImage();
                         setState(() {
                           imageChanged = true;
                           image = image;
@@ -175,42 +163,40 @@ class _LifestylePopupState extends State<LifestylePopup> {
           DialogButton(
             color: Colors.red,
             onPressed: () async {
+              Navigator.pop(context);
+              _loadingDialog(context);
               if (image != null) {
-                Navigator.pop(context);
-                _loadingDialog(context);
+                isLoading = true;
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await imageUtils.uploadToFirebase();
+                  imageURL = await NutritionDaysPicsBloc().uploadToFirebase();
                 }
 
                 switch (widget.popUpFunctions) {
                   case PopUpFunctions.add:
                     String id = Uuid().v1();
                     int order = widget.count != null ? widget.count : 0;
-                    LifestyleItem lifestyleItem2 = LifestyleItem(
+                    List<LifestyleItem> items = [];
+                    LifestyleDay lifestyleday = LifestyleDay(
                       title: title,
                       order: order,
-                      subtitle: subtitle,
-                      videoUrl: videoUrl,
-                      imageUrl: imageURL,
+                      subtitle: description,
                       id: id,
+                      imageUrl: imageURL,
+                      items: items,
                     );
-                    LifestyleBloc().addLifestyleItem(widget.lifestyleProgram.id,
-                        widget.lifestyleDay.id, lifestyleItem2);
+                    lifestyleBloc.addLifestyleDay(lifestyleday, widget.id);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
                   case PopUpFunctions.edit:
-                    widget.item.subtitle = subtitleController.text;
-                    widget.item.title = titleController.text;
-                    widget.item.videoUrl = videoUrlController.text;
+                    widget.lifestyleday.subtitle = descriptionController.text;
+                    widget.lifestyleday.title = titleController.text;
                     if (imageURL != "") {
-                      widget.item.imageUrl = imageURL;
+                      widget.lifestyleday.imageUrl = imageURL;
                     }
-                    LifestyleBloc().editLifestyleItem(
-                        widget.lifestyleProgram.id,
-                        widget.lifestyleDay.id,
-                        widget.item);
+                    lifestyleBloc.editLifestyleDay(
+                        widget.lifestyleday, widget.id);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
@@ -227,13 +213,10 @@ class _LifestylePopupState extends State<LifestylePopup> {
 
   @override
   void initState() {
-    videoUrlController.addListener(_updateLatestValue);
-    titleController.addListener(_updateLatestValue);
-    subtitleController.addListener(_updateLatestValue);
     Future.delayed(
-      Duration.zero,
-      () => _onAlertWithCustomContextPassed(context),
-    );
+        Duration.zero, () => _onAlertWithCustomContextPassed(context));
+    descriptionController.addListener(_updateLatestValue);
+    titleController.addListener(_updateLatestValue);
     _setUpFunction();
 
     super.initState();
@@ -243,14 +226,14 @@ class _LifestylePopupState extends State<LifestylePopup> {
   void dispose() {
     super.dispose();
     titleController.dispose();
-    subtitleController.dispose();
-    videoUrlController.dispose();
+
+    descriptionController.dispose();
   }
 
   _updateLatestValue() {
     title = titleController.text;
-    subtitle = subtitleController.text;
-    videoUrl = videoUrlController.text;
+
+    description = descriptionController.text;
   }
 
   @override
@@ -266,8 +249,8 @@ class _LifestylePopupState extends State<LifestylePopup> {
   }
 }
 
-class TransparentRoute extends PageRoute<void> {
-  TransparentRoute({
+class TransparentRoute7 extends PageRoute<void> {
+  TransparentRoute7({
     @required this.builder,
     RouteSettings settings,
   })  : assert(builder != null),

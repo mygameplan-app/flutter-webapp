@@ -7,12 +7,22 @@ import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
+import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
+import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/lifestyle_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:uuid/uuid.dart';
 
 class LifestyleAdmin extends StatefulWidget {
+  final LifestyleProgram lifestyleProgram;
+  final LifestyleDay lifestyleDay;
+
+  LifestyleAdmin({
+    this.lifestyleDay,
+    this.lifestyleProgram,
+  });
+
   _LifestyleAdminState createState() => _LifestyleAdminState();
 }
 
@@ -30,6 +40,10 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
               .collection('apps')
               .doc(appId)
               .collection('lifestyle')
+              .doc(widget.lifestyleProgram.id)
+              .collection('days')
+              .doc(widget.lifestyleDay.id)
+              .collection('items')
               .doc(lifestyleItem.id)
               .delete();
 
@@ -39,6 +53,8 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
             popUpFunctions: PopUpFunctions.edit,
             count: lifestyleItems.length,
             item: lifestyleItem,
+            lifestyleDay: widget.lifestyleDay,
+            lifestyleProgram: widget.lifestyleProgram,
           );
           await Navigator.push(
               context, TransparentRoute(builder: (context) => lifestylePopup));
@@ -48,7 +64,8 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
           LifestyleItem newItem = lifestyleItem;
           newItem.id = Uuid().v1();
           newItem.order = lifestyleItems != null ? lifestyleItems.length : 0;
-          LifestyleBloc().addLifestyleItem(newItem);
+          LifestyleBloc().addLifestyleItem(
+              widget.lifestyleProgram.id, widget.lifestyleDay.id, newItem);
           return;
         case Functions.reorder:
           setState(() {
@@ -116,6 +133,10 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
         .collection('apps')
         .doc(appId)
         .collection('lifestyle')
+        .doc(widget.lifestyleProgram.id)
+        .collection('days')
+        .doc(widget.lifestyleDay.id)
+        .collection('items')
         .orderBy('order');
     return StreamBuilder(
       stream: query.snapshots(),
@@ -146,6 +167,8 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
                 textColor: Colors.white,
                 onPressed: () {
                   LifestylePopup lifestylePopup = LifestylePopup(
+                    lifestyleProgram: widget.lifestyleProgram,
+                    lifestyleDay: widget.lifestyleDay,
                     count: lifestyleItems.length,
                     popUpFunctions: PopUpFunctions.add,
                   );
@@ -183,7 +206,11 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
         collection: FirebaseFirestore.instance
             .collection('apps')
             .doc(appId)
-            .collection('lifestyle'),
+            .collection('lifestyle')
+            .doc(widget.lifestyleProgram.id)
+            .collection('days')
+            .doc(widget.lifestyleDay.id)
+            .collection('items'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
           return getlistTile(LifestyleItem.fromJson(doc.data()), index);

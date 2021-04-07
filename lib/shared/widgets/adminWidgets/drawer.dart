@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/admin_page.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/lifestyle_admin.dart';
+import 'package:jdarwish_dashboard_web/views/pages/admin/lifestyle_program_admin.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/nutrition_admin.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/product_admin.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/workouts_admin.dart';
@@ -64,7 +64,7 @@ class AdminDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LifestyleAdmin(),
+                  builder: (context) => LifestyleCategoriesAdmin(),
                 ),
               );
             },
