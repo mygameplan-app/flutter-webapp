@@ -1,22 +1,20 @@
+import 'dart:async';
+import 'dart:html' as html;
 import 'dart:ui';
 
 import 'package:firebase/firebase.dart' as fb;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:io';
-import 'dart:async';
-import 'dart:html' as html;
-import 'package:image_whisperer/image_whisperer.dart';
-import 'package:jdarwish_dashboard_web/shared/models/fileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 
 class ImageUtils {
   static final ImageUtils _singleton = ImageUtils._internal();
+
   factory ImageUtils() {
     return _singleton;
   }
+
   ImageUtils._internal();
 
   Future<Image> uploadImage() async {
@@ -57,12 +55,8 @@ class ImageUtils {
           .future;
 
       var imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
-
-      var url = imageUri.toString();
-
-      return url;
+      return imageUri.toString();
     }
-    return "";
   }
 
   Image image;

@@ -1,16 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
-
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_day_picsbloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:uuid/uuid.dart';
 
 class NutritionDaysPopup extends StatefulWidget {
   final NutritionDay nutritionday;
@@ -51,7 +49,7 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       image = Image.network(widget.nutritionday.imageUrl);
       daysPicsBloc.image = image;
       titleController.text = widget.nutritionday.title;
@@ -106,7 +104,7 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Nutrition Day"
             : "Edit Nutrition Day",
         content: StatefulBuilder(builder: (context, setState) {
@@ -176,17 +174,23 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
                 }
 
                 switch (widget.popUpFunctions) {
-                  case PopUpFunctions.Add:
+                  case PopUpFunctions.add:
                     String id = Uuid().v1();
                     int order = widget.count != null ? widget.count : 0;
                     List<Meal> meals = [];
                     NutritionDay nutritionday = NutritionDay(
-                        title, order, description, id, imageURL, meals);
+                      title: title,
+                      order: order,
+                      subtitle: description,
+                      id: id,
+                      imageUrl: imageURL,
+                      meals: meals,
+                    );
                     nutritionBloc.addNutritionDay(nutritionday, widget.id);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
-                  case PopUpFunctions.Edit:
+                  case PopUpFunctions.edit:
                     widget.nutritionday.subtitle = descriptionController.text;
                     widget.nutritionday.title = titleController.text;
                     if (imageURL != "") {

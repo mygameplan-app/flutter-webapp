@@ -1,15 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/models/product.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/product.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductWidget extends StatefulWidget {
   final Product product;
@@ -25,7 +21,7 @@ class ProductWidget extends StatefulWidget {
 class MyProductWidget extends State<ProductWidget> {
   void doPopUp(Functions result) async {
     switch (result) {
-      case Functions.Delete:
+      case Functions.delete:
         await FirebaseFirestore.instance
             .collection('products')
             .doc(widget.categoryID)
@@ -34,9 +30,9 @@ class MyProductWidget extends State<ProductWidget> {
             .delete();
 
         return;
-      case Functions.Edit:
+      case Functions.edit:
         return;
-      case Functions.Duplicate:
+      case Functions.duplicate:
         ProductBloc productbloc = ProductBloc();
         Product newProduct = widget.product;
         newProduct.id = Uuid().v1();
@@ -81,7 +77,7 @@ class MyProductWidget extends State<ProductWidget> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      widget.product.storedImageURL,
+                      widget.product.imageUrl,
                       height: 100,
                       width: 150,
                       fit: BoxFit.fitWidth,
@@ -162,15 +158,15 @@ class MyProductWidget extends State<ProductWidget> {
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<Functions>>[
                 const PopupMenuItem<Functions>(
-                  value: Functions.Edit,
+                  value: Functions.edit,
                   child: Text('Edit'),
                 ),
                 const PopupMenuItem<Functions>(
-                  value: Functions.Duplicate,
+                  value: Functions.duplicate,
                   child: Text('Duplicate'),
                 ),
                 const PopupMenuItem<Functions>(
-                  value: Functions.Delete,
+                  value: Functions.delete,
                   child: Text('Delete'),
                 ),
               ],
@@ -203,7 +199,7 @@ class MyProductWidget extends State<ProductWidget> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
-                      widget.product.storedImageURL,
+                      widget.product.imageUrl,
                       height: 75,
                       width: 100,
                       fit: BoxFit.fitWidth,
@@ -284,15 +280,15 @@ class MyProductWidget extends State<ProductWidget> {
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<Functions>>[
                 const PopupMenuItem<Functions>(
-                  value: Functions.Edit,
+                  value: Functions.edit,
                   child: Text('Edit'),
                 ),
                 const PopupMenuItem<Functions>(
-                  value: Functions.Duplicate,
+                  value: Functions.duplicate,
                   child: Text('Duplicate'),
                 ),
                 const PopupMenuItem<Functions>(
-                  value: Functions.Delete,
+                  value: Functions.delete,
                   child: Text('Delete'),
                 ),
               ],

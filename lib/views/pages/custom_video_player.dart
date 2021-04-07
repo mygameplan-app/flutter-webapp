@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
-import 'dart:ui' as ui;
-import 'dart:html' as html;
-import 'dart:js' as js;
-import 'package:video_player/video_player.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-class CustomVideoPlayer extends StatefulWidget {
+class YoutubeVideoPlayer extends StatefulWidget {
+  String videoUrl;
+
+  YoutubeVideoPlayer({
+    this.videoUrl,
+  });
+
   @override
-  _CustomVideoPlayerState createState() => _CustomVideoPlayerState();
+  _YoutubeVideoPlayerState createState() => _YoutubeVideoPlayerState();
 }
 
-class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
+class _YoutubeVideoPlayerState extends State<YoutubeVideoPlayer> {
   YoutubePlayerController controller;
   String getId() {
-    print('Arguments');
-    print(Get.arguments.toString());
-    var removeIndex = Get.arguments.toString().lastIndexOf("/");
-    return Get.arguments.toString().replaceRange(0, removeIndex, "");
+    if (widget.videoUrl != null) {
+      return YoutubePlayerController.convertUrlToId(widget.videoUrl);
+    }
+    return YoutubePlayerController.convertUrlToId(Get.arguments);
   }
 
   @override
@@ -50,14 +51,13 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
             child: Row(
               children: [
                 IconButton(
-                    icon: Icon(
-                      Icons.navigate_before,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
+                  icon: Icon(
+                    Icons.navigate_before,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 Spacer(
                   flex: 1,
                 )
@@ -65,13 +65,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
             ),
           ),
           Container(
-              height: MediaQuery.of(context).size.height - 40,
-              width: MediaQuery.of(context).size.width,
-              child: YoutubePlayerIFrame(
-                aspectRatio: MediaQuery.of(context).size.height -
-                    40 / MediaQuery.of(context).size.width,
-                controller: controller,
-              )),
+            height: MediaQuery.of(context).size.height - 40,
+            width: MediaQuery.of(context).size.width,
+            child: YoutubePlayerIFrame(
+              aspectRatio: MediaQuery.of(context).size.height -
+                  40 / MediaQuery.of(context).size.width,
+              controller: controller,
+            ),
+          ),
         ],
       ),
     );

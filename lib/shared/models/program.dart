@@ -3,36 +3,34 @@ import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
 
 class Program {
   String name;
-  int order;
   Color themeColor;
   String id;
   List<TrainingDay> trainingDays;
-  Program(name, order, themeColor, id, trainingDays) {
-    this.name = name != null ? name : '';
-    this.order = order != null ? order : 0;
-    this.themeColor = themeColor != null ? themeColor : Colors.blue;
-    this.id = id != null ? id : '';
-    this.trainingDays = trainingDays != null ? trainingDays : [];
-  }
-  Program.init2({
+  int order;
+
+  Program({
     this.name,
-    this.order,
     this.themeColor,
     this.id,
     this.trainingDays,
+    this.order,
   });
 
   factory Program.fromJson(Map<String, dynamic> json) {
-    return Program.init2(
-      name: json['name'] != null ? json['name'] : '',
-      order: json['order'] != null ? json['order'] : 0,
-      themeColor:
-          json['color'] != null ? _parseColor(json['color']) : Colors.blue,
-      id: json['id'] != null ? json['id'].toString() : '',
+    return Program(
+      name: json['name'],
+      themeColor: _parseColor(json['color']),
       trainingDays: [],
+      order: json['order'] ?? 999,
     );
   }
-  //Fix color mapping
+
+  static Color _parseColor(String color) {
+    if (color == null) return Colors.blue;
+
+    return Color(int.parse(color.substring(1), radix: 16));
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['color'] = _setColor(this.themeColor);
@@ -41,14 +39,6 @@ class Program {
     data['name'] = this.name;
 
     return data;
-  }
-
-  static Color _parseColor(String color) {
-    if (color == null) return Colors.blue;
-    final buffer = StringBuffer();
-    if (color.length == 6 || color.length == 7) buffer.write('ff');
-    buffer.write(color.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
   }
 
   static String _setColor(Color color) {

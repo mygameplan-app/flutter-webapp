@@ -1,37 +1,31 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/constants.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/product_category1.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/drawer.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
+import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_category_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/product_detail_admin.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/workouts_admin.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:ui';
-import 'admin_page.dart';
-import 'nutrition_admin.dart';
 
 class ProductCategoriesAdmin extends StatefulWidget {
   MyProductCategoriesAdmin createState() => MyProductCategoriesAdmin();
 }
 
 class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
-  ProductCategoriesBloc productcategoryBloc = ProductCategoriesBloc();
   List<ProductCategory> productCategories = [];
   bool isReordering = false;
-  //Product Categories Stream
+
   StreamBuilder categoriesFetcher() {
-    void doPopUp(Functions1 result, ProductCategory productCategory) async {
+    void doPopUp(Functions result, ProductCategory productCategory) async {
       switch (result) {
-        case Functions1.Delete:
+        case Functions.delete:
           await FirebaseFirestore.instance
               .collection('apps')
               .doc(appId)
@@ -40,9 +34,9 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
               .delete();
 
           return;
-        case Functions1.Edit:
+        case Functions.edit:
           ProductCategoryPopup productCategoryPopup = ProductCategoryPopup(
-            popUpFunctions: PopUpFunctions.Edit,
+            popUpFunctions: PopUpFunctions.edit,
             count: productCategories.length,
             productCategory: productCategory,
           );
@@ -50,15 +44,15 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
               TransparentRoute(builder: (context) => productCategoryPopup));
 
           return;
-        case Functions1.Duplicate:
+        case Functions.duplicate:
           ProductCategory newProductCategory = productCategory;
           newProductCategory.id = Uuid().v1();
           newProductCategory.order =
               productCategories != null ? productCategories.length : 0;
           newProductCategory.timeStamp = DateTime.now().toString();
-          productcategoryBloc.addProductCategorytoStore(newProductCategory);
+          ProductCategoriesBloc().addProductCategorytoStore(newProductCategory);
           return;
-        case Functions1.ReOrder:
+        case Functions.reorder:
           setState(() {
             isReordering = true;
           });
@@ -97,25 +91,25 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
                   color: Colors.white,
                   size: 20,
                 ),
-                onSelected: (Functions1 result) {
+                onSelected: (Functions result) {
                   doPopUp(result, productCategory);
                 },
                 itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<Functions1>>[
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Edit,
+                    <PopupMenuEntry<Functions>>[
+                  const PopupMenuItem<Functions>(
+                    value: Functions.edit,
                     child: Text('Edit'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Duplicate,
+                  const PopupMenuItem<Functions>(
+                    value: Functions.duplicate,
                     child: Text('Duplicate'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Delete,
+                  const PopupMenuItem<Functions>(
+                    value: Functions.delete,
                     child: Text('Delete'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                      value: Functions1.ReOrder, child: Text('Reorder'))
+                  const PopupMenuItem<Functions>(
+                      value: Functions.reorder, child: Text('Reorder'))
                 ],
               ),
               trailing: Icon(
@@ -166,7 +160,7 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
                     ProductCategoryPopup productCategoryPopup =
                         ProductCategoryPopup(
                       count: productCategories.length,
-                      popUpFunctions: PopUpFunctions.Add,
+                      popUpFunctions: PopUpFunctions.add,
                     );
                     Navigator.push(
                         context,

@@ -1,24 +1,19 @@
 import 'package:badges/badges.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:jdarwish_dashboard_web/shared/models/customer.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/drawer.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/admin_page.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/message_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/user_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
+import 'package:jdarwish_dashboard_web/shared/models/customer.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/drawer.dart';
 import 'package:jdarwish_dashboard_web/views/pages/goals_page.dart';
-import 'package:jdarwish_dashboard_web/views/pages/messages_page.dart';
 import 'package:jdarwish_dashboard_web/views/pages/profile_page.dart';
+import 'package:jdarwish_dashboard_web/views/tabs/lifestyle_tab.dart';
 import 'package:jdarwish_dashboard_web/views/tabs/nutrition_tab.dart';
 import 'package:jdarwish_dashboard_web/views/tabs/store_tab.dart';
 import 'package:jdarwish_dashboard_web/views/tabs/training_tab.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/settings_popup.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -30,11 +25,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   int navIndex = 0;
 
   TabController _tabController;
-  final _auth = FirebaseAuth.instance;
+
   @override
   void initState() {
-    _tabController = TabController(vsync: this, length: 3);
-    print('home');
+    _tabController = TabController(vsync: this, length: 4);
     super.initState();
   }
 
@@ -130,6 +124,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               children: [
                 TrainingTab(),
                 NutritionTab(),
+                LifestyleTab(),
                 StoreTab(),
                 // StoreTab(),
               ],
@@ -156,6 +151,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       tabs: [
         _tabItem('Workouts'),
         _tabItem('Nutrition'),
+        _tabItem('Lifestyle'),
         _tabItem('Store'),
       ],
     );

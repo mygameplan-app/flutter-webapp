@@ -1,13 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class NutritionCategoryPopup extends StatefulWidget {
   final NutritionProgram nutritionProgram;
@@ -37,7 +37,7 @@ class MyNutritionCategoryPopup extends State<NutritionCategoryPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       nameController.text = widget.nutritionProgram.name;
       setState(() {
         print(widget.nutritionProgram.themeColor);
@@ -97,7 +97,7 @@ class MyNutritionCategoryPopup extends State<NutritionCategoryPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Nutrition Category"
             : "Edit Nutrition Category",
         content: StatefulBuilder(builder: (context, setState) {
@@ -173,18 +173,23 @@ class MyNutritionCategoryPopup extends State<NutritionCategoryPopup> {
               Navigator.pop(context);
               _loadingDialog(context);
               switch (widget.popUpFunctions) {
-                case PopUpFunctions.Add:
+                case PopUpFunctions.add:
                   String id = Uuid().v1();
                   List<NutritionDay> days = [];
                   Color themeColor = selectedColor;
                   int order = widget.count != null ? widget.count : 0;
-                  NutritionProgram nutritionProgram =
-                      NutritionProgram(name, order, themeColor, id, days);
+                  NutritionProgram nutritionProgram = NutritionProgram(
+                    name: name,
+                    order: order,
+                    themeColor: themeColor,
+                    id: id,
+                    nutritionDays: days,
+                  );
                   nutritionBloc.addNutritionProgram(nutritionProgram);
                   int count = 0;
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                   return;
-                case PopUpFunctions.Edit:
+                case PopUpFunctions.edit:
                   widget.nutritionProgram.name = name;
                   widget.nutritionProgram.themeColor = selectedColor;
                   nutritionBloc.editNutritionProgram(widget.nutritionProgram);

@@ -1,23 +1,15 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/ingredients_pics_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/meal_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_day_picsbloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:uuid/uuid.dart';
 
 class IngredientsPopup extends StatefulWidget {
   final NutritionDay nutritionday;
@@ -61,7 +53,7 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       image = Image.network(widget.ingredient.imageUrl);
 
       titleController.text = widget.ingredient.title;
@@ -114,7 +106,7 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Ingredient"
             : "Edit Ingredient",
         content: StatefulBuilder(builder: (context, setState) {
@@ -177,7 +169,7 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                 }
 
                 switch (widget.popUpFunctions) {
-                  case PopUpFunctions.Add:
+                  case PopUpFunctions.add:
                     String id = Uuid().v1();
                     int order = widget.count != null ? widget.count : 0;
                     print(imageURL);
@@ -192,7 +184,7 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
-                  case PopUpFunctions.Edit:
+                  case PopUpFunctions.edit:
                     widget.ingredient.title = titleController.text;
                     if (imageURL != "") {
                       widget.ingredient.imageUrl = imageURL;

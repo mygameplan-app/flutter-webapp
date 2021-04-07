@@ -6,6 +6,7 @@ class Exercise {
   String videoUrl;
   String imageUrl;
   int order;
+
   Exercise(title, subtitle, id, description, videoUrl, imageUrl, order) {
     this.title = title;
     this.subtitle = subtitle;
@@ -17,14 +18,16 @@ class Exercise {
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(
-        json['title'].toString(),
-        json['subtitle'].toString(),
-        json['id'].toString(),
-        json['description'].toString(),
-        json['videoUrl'].toString(),
-        json['imageUrl'].toString(),
-        json['order']);
+      json['title'],
+      json['subtitle'],
+      json['id'],
+      json['description'],
+      json['videoUrl'],
+      json['imageUrl'],
+      json['order'],
+    );
   }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;

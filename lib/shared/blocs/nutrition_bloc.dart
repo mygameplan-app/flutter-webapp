@@ -2,16 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
 
 import '../constants.dart';
 
 class NutritionBloc {
   static final NutritionBloc _singleton = NutritionBloc._internal();
+
   factory NutritionBloc() {
     return _singleton;
   }
+
   NutritionBloc._internal();
 
   List<NutritionProgram> nutritionPrograms = [];
@@ -34,6 +35,7 @@ class NutritionBloc {
           .get()
           .then((dayDocs) async {
         for (var d in dayDocs.docs) {
+          print(d.data().toString());
           NutritionDay day = NutritionDay.fromJson(d.data())..id = d.id;
           program.nutritionDays.add(day);
           await d.reference

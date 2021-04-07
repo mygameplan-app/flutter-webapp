@@ -1,18 +1,19 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/models/product.dart';
-import 'package:uuid/uuid.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:jdarwish_dashboard_web/shared/models/product.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductPopup extends StatefulWidget {
   final Product product;
   final int count;
   final PopUpFunctions popUpFunctions;
   final String id;
+
   ProductPopup(
       {this.product,
       @required this.count,
@@ -37,6 +38,7 @@ class MyProductPopup extends State<ProductPopup> {
   final linkController = TextEditingController();
   ProductBloc product2bloc = ProductBloc();
   ImageUtils imageUtils = ImageUtils();
+
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -47,8 +49,8 @@ class MyProductPopup extends State<ProductPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
-      image = Image.network(widget.product.storedImageURL);
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
+      image = Image.network(widget.product.imageUrl);
       priceController.text = widget.product.price;
       titleController.text = widget.product.title;
       linkController.text = widget.product.link;
@@ -102,7 +104,7 @@ class MyProductPopup extends State<ProductPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Product"
             : "Edit Product",
         content: StatefulBuilder(builder: (context, setState) {
@@ -183,23 +185,31 @@ class MyProductPopup extends State<ProductPopup> {
                 }
 
                 switch (widget.popUpFunctions) {
-                  case PopUpFunctions.Add:
+                  case PopUpFunctions.add:
                     String id = Uuid().v1();
                     var timeStamp = DateTime.now().toString();
                     int order = widget.count != null ? widget.count : 0;
-                    Product product2 = Product(title, order, description, price,
-                        link, imageURL, id, timeStamp);
+                    Product product2 = Product(
+                      title: title,
+                      order: order,
+                      description: description,
+                      price: price,
+                      link: link,
+                      imageUrl: imageURL,
+                      id: id,
+                      timeStamp: timeStamp,
+                    );
                     product2bloc.addProduct2toStore(product2, widget.id);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
-                  case PopUpFunctions.Edit:
+                  case PopUpFunctions.edit:
                     widget.product.description = descriptionController.text;
                     widget.product.title = titleController.text;
                     widget.product.price = priceController.text;
                     widget.product.link = linkController.text;
                     if (imageURL != "") {
-                      widget.product.storedImageURL = imageURL;
+                      widget.product.imageUrl = imageURL;
                     }
                     product2bloc.editProduct2(widget.product, widget.id);
                     int count = 0;

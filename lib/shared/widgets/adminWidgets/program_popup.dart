@@ -1,16 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:uuid/uuid.dart';
 
 class ProgramPopup extends StatefulWidget {
   final Program program;
@@ -37,7 +34,7 @@ class MyProgramPopup extends State<ProgramPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       nameController.text = widget.program.name;
       setState(() {
         selectedColor = widget.program.themeColor;
@@ -91,7 +88,7 @@ class MyProgramPopup extends State<ProgramPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Workout"
             : "Edit Workout",
         content: StatefulBuilder(builder: (context, setState) {
@@ -165,18 +162,24 @@ class MyProgramPopup extends State<ProgramPopup> {
               Navigator.pop(context);
               _loadingDialog(context);
               switch (widget.popUpFunctions) {
-                case PopUpFunctions.Add:
+                case PopUpFunctions.add:
                   String id = Uuid().v1();
 
                   Color themeColor = selectedColor;
                   int order = widget.count != null ? widget.count : 0;
                   List<TrainingDay> days = [];
-                  Program program = Program(name, order, themeColor, id, days);
+                  Program program = Program(
+                    name: name,
+                    order: order,
+                    themeColor: themeColor,
+                    id: id,
+                    trainingDays: days,
+                  );
                   exerciseBloc.addProgram(program);
                   int count = 0;
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                   return;
-                case PopUpFunctions.Edit:
+                case PopUpFunctions.edit:
                   widget.program.name = name;
                   widget.program.themeColor = selectedColor;
                   exerciseBloc.editProgram(widget.program);

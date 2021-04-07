@@ -8,31 +8,25 @@ class ProductCategory {
   String id;
   String timeStamp;
   List<Product> products = [];
-  ProductCategory(name, order, themeColor, id, timeStamp, products) {
-    this.name = name != null ? name : '';
-    this.order = order != null ? order : 0;
-    this.themeColor = themeColor != null ? themeColor : Colors.blue;
-    this.id = id != null ? id : '';
-    this.timeStamp = timeStamp != null ? timeStamp : '';
-    this.products = products != null ? products : [];
-  }
-  ProductCategory.init2(
-      {this.name,
-      this.order,
-      this.themeColor,
-      this.id,
-      this.timeStamp,
-      this.products});
+
+  ProductCategory({
+    this.name,
+    this.order,
+    this.themeColor,
+    this.id,
+    this.timeStamp,
+    this.products,
+  });
+
   factory ProductCategory.fromJson(Map<String, dynamic> json) {
-    return ProductCategory.init2(
-        name: json['name'] != null ? json['name'] : '',
-        order: json['order'] != null ? json['order'] : 0,
-        themeColor: json['themeColor'] != null
-            ? _parseColor(json['themeColor'].toString())
-            : Colors.blue,
-        id: json['id'] != null ? json['id'] : '',
-        timeStamp: json['timeStamp'] != null ? json['timeStamp'] : '',
-        products: []);
+    return ProductCategory(
+      name: json['name'],
+      order: json['order'] ?? 999,
+      themeColor: _parseColor(json['themeColor']),
+      id: json['id'],
+      timeStamp: json['timeStamp'],
+      products: [],
+    );
   }
 
   static Color _parseColor(String color) {

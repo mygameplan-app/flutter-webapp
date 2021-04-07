@@ -1,20 +1,19 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/models/product.dart';
-import 'package:jdarwish_dashboard_web/shared/models/product_category1.dart';
-import 'package:uuid/uuid.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:jdarwish_dashboard_web/shared/models/product.dart';
+import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductCategoryPopup extends StatefulWidget {
   final ProductCategory productCategory;
   final PopUpFunctions popUpFunctions;
   final int count;
+
   ProductCategoryPopup(
       {this.productCategory,
       @required this.popUpFunctions,
@@ -39,7 +38,7 @@ class MyProductCategoryPopup extends State<ProductCategoryPopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       nameController.text = widget.productCategory.name;
       setState(() {
         selectedColor = widget.productCategory.themeColor;
@@ -93,7 +92,7 @@ class MyProductCategoryPopup extends State<ProductCategoryPopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Product Category"
             : "Edit Product Category",
         content: StatefulBuilder(builder: (context, setState) {
@@ -167,20 +166,26 @@ class MyProductCategoryPopup extends State<ProductCategoryPopup> {
               Navigator.pop(context);
               _loadingDialog(context);
               switch (widget.popUpFunctions) {
-                case PopUpFunctions.Add:
+                case PopUpFunctions.add:
                   String id = Uuid().v1();
                   String timeStamp = DateTime.now().toString();
                   Color themeColor = selectedColor;
                   int order = widget.count != null ? widget.count : 0;
                   List<Product> products = [];
                   ProductCategory productcategory = ProductCategory(
-                      name, order, themeColor, id, timeStamp, products);
+                    name: name,
+                    order: order,
+                    themeColor: themeColor,
+                    id: id,
+                    timeStamp: timeStamp,
+                    products: products,
+                  );
                   productCategorybloc
                       .addProductCategorytoStore(productcategory);
                   int count = 0;
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                   return;
-                case PopUpFunctions.Edit:
+                case PopUpFunctions.edit:
                   widget.productCategory.name = name;
                   widget.productCategory.themeColor = selectedColor;
                   productCategorybloc

@@ -1,31 +1,30 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
-import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
+import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
-class DaysPopup extends StatefulWidget {
-  final TrainingDay trainingday;
+class LifestylePopup extends StatefulWidget {
+  final LifestyleItem item;
   final int count;
   final PopUpFunctions popUpFunctions;
-  final String id;
-  DaysPopup(
-      {this.trainingday,
-      @required this.popUpFunctions,
-      @required this.count,
-      @required this.id});
 
-  MyDaysPopup createState() => MyDaysPopup();
+  LifestylePopup({
+    this.item,
+    @required this.count,
+    @required this.popUpFunctions,
+  });
+
+  _LifestylePopupState createState() => _LifestylePopupState();
 }
 
-class MyDaysPopup extends State<DaysPopup> {
+class _LifestylePopupState extends State<LifestylePopup> {
   String text = 'Only .png and .jpeg files allowed.';
-
+  String videoUrl = "";
   String title = "";
   String subtitle = "";
   bool isLoading = false;
@@ -34,9 +33,10 @@ class MyDaysPopup extends State<DaysPopup> {
 
   final titleController = TextEditingController();
   final subtitleController = TextEditingController();
+  final videoUrlController = TextEditingController();
 
-  ExerciseBloc exerciseBloc = ExerciseBloc();
-  DaysPicsBloc daysPicsBloc = DaysPicsBloc();
+  ImageUtils imageUtils = ImageUtils();
+
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -48,11 +48,10 @@ class MyDaysPopup extends State<DaysPopup> {
 
   _setUpFunction() {
     if (widget.popUpFunctions == PopUpFunctions.edit) {
-      image = Image.network(widget.trainingday.imageUrl);
-
-      titleController.text = widget.trainingday.title;
-
-      subtitleController.text = widget.trainingday.subtitle;
+      image = widget.item.imageUrl == null ? null : Image.network(widget.item.imageUrl);
+      titleController.text = widget.item.title;
+      subtitleController.text = widget.item.subtitle;
+      videoUrlController.text = widget.item.videoUrl;
     }
   }
 
@@ -103,8 +102,8 @@ class MyDaysPopup extends State<DaysPopup> {
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
         title: widget.popUpFunctions == PopUpFunctions.add
-            ? "Add Day"
-            : "Edit Day",
+            ? "Add Lifestyle Item"
+            : "Edit Lifestyle Item",
         content: StatefulBuilder(builder: (context, setState) {
           return Container(
             width: MediaQuery.of(context).size.width * multiplier(),
@@ -116,11 +115,17 @@ class MyDaysPopup extends State<DaysPopup> {
                   ),
                   controller: titleController,
                 ),
-                TextFormField(
+                TextField(
                   decoration: InputDecoration(
-                    labelText: 'subtitle',
+                    labelText: 'Subtitle',
                   ),
                   controller: subtitleController,
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Video URL',
+                  ),
+                  controller: videoUrlController,
                 ),
                 image != null
                     ? Container(
@@ -139,10 +144,10 @@ class MyDaysPopup extends State<DaysPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await daysPicsBloc.uploadImage();
+                        image = await imageUtils.uploadImage();
                         setState(() {
-                          image = image;
                           imageChanged = true;
+                          image = image;
                         });
                       },
                       child: Text('Choose Image',
@@ -163,44 +168,37 @@ class MyDaysPopup extends State<DaysPopup> {
             color: Colors.red,
             onPressed: () async {
               if (image != null) {
-                isLoading = true;
+                Navigator.pop(context);
+                _loadingDialog(context);
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await daysPicsBloc.uploadToFirebase();
+                  imageURL = await imageUtils.uploadToFirebase();
                 }
 
                 switch (widget.popUpFunctions) {
                   case PopUpFunctions.add:
-                    Navigator.pop(context);
-                    _loadingDialog(context);
                     String id = Uuid().v1();
-                    List<Exercise> exercises = [];
                     int order = widget.count != null ? widget.count : 0;
-                    TrainingDay trainingday = TrainingDay(
+                    LifestyleItem lifestyleItem2 = LifestyleItem(
                       title: title,
                       order: order,
                       subtitle: subtitle,
+                      videoUrl: videoUrl,
                       imageUrl: imageURL,
                       id: id,
-                      exercises: exercises,
                     );
-                    exerciseBloc.addTrainingDay(trainingday, widget.id);
+                    LifestyleBloc().addLifestyleItem(lifestyleItem2);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
                   case PopUpFunctions.edit:
-                    Navigator.pop(context);
-                    _loadingDialog(context);
-                    widget.trainingday.subtitle = subtitle;
-                    print(subtitle);
-
-                    widget.trainingday.title = title;
-                    print(title);
+                    widget.item.subtitle = subtitleController.text;
+                    widget.item.title = titleController.text;
+                    widget.item.videoUrl = videoUrlController.text;
                     if (imageURL != "") {
-                      widget.trainingday.imageUrl = imageURL;
+                      widget.item.imageUrl = imageURL;
                     }
-                    print(imageURL);
-                    exerciseBloc.editTrainingDay(widget.trainingday, widget.id);
+                    LifestyleBloc().editLifestyleItem(widget.item);
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
@@ -217,10 +215,13 @@ class MyDaysPopup extends State<DaysPopup> {
 
   @override
   void initState() {
-    Future.delayed(
-        Duration.zero, () => _onAlertWithCustomContextPassed(context));
-    subtitleController.addListener(_updateLatestValue);
+    videoUrlController.addListener(_updateLatestValue);
     titleController.addListener(_updateLatestValue);
+    subtitleController.addListener(_updateLatestValue);
+    Future.delayed(
+      Duration.zero,
+      () => _onAlertWithCustomContextPassed(context),
+    );
     _setUpFunction();
 
     super.initState();
@@ -230,14 +231,14 @@ class MyDaysPopup extends State<DaysPopup> {
   void dispose() {
     super.dispose();
     titleController.dispose();
-
     subtitleController.dispose();
+    videoUrlController.dispose();
   }
 
   _updateLatestValue() {
     title = titleController.text;
-
     subtitle = subtitleController.text;
+    videoUrl = videoUrlController.text;
   }
 
   @override
@@ -253,8 +254,8 @@ class MyDaysPopup extends State<DaysPopup> {
   }
 }
 
-class TransparentRoute4 extends PageRoute<void> {
-  TransparentRoute4({
+class TransparentRoute extends PageRoute<void> {
+  TransparentRoute({
     @required this.builder,
     RouteSettings settings,
   })  : assert(builder != null),

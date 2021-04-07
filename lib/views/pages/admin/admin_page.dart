@@ -1,21 +1,19 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/product_category1.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
+import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/settings_popup.dart';
-import 'dart:ui';
+import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 
 class AdminPage extends StatefulWidget {
   MyAdminPage createState() => MyAdminPage();
 }
 
 class MyAdminPage extends State<AdminPage> {
-  //Variables
-  ProductCategoriesBloc productcategoryBloc = ProductCategoriesBloc();
   List<ProductCategory> productCategories = [];
+
   //Product Categories Stream
 
   @override

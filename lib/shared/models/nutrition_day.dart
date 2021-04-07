@@ -7,16 +7,8 @@ class NutritionDay {
   String id;
   String imageUrl;
   List<Meal> meals;
-  NutritionDay(title, order, subtitle, id, imageUrl, meals) {
-    this.title = title != null ? title : '';
-    this.order = order != null ? order : 0;
-    this.subtitle = subtitle != null ? subtitle : '';
-    this.id = id != null ? id : '';
-    this.imageUrl = imageUrl != null ? imageUrl : '';
 
-    this.meals = meals != null ? meals : [];
-  }
-  NutritionDay.init2({
+  NutritionDay({
     this.title,
     this.order,
     this.subtitle,
@@ -26,12 +18,12 @@ class NutritionDay {
   });
 
   factory NutritionDay.fromJson(Map<String, dynamic> json) {
-    return NutritionDay.init2(
+    return NutritionDay(
       title: json['title'],
       order: json['order'],
       subtitle: json['subtitle'],
-      id: json['id'] != null ? json['id'] : '',
-      imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
+      id: json['id'],
+      imageUrl: json['imageUrl'] ?? '',
       meals: [],
     );
   }

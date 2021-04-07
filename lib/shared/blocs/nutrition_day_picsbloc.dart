@@ -1,23 +1,21 @@
+import 'dart:async';
+import 'dart:html' as html;
 import 'dart:ui';
 
 import 'package:firebase/firebase.dart' as fb;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:io';
-import 'dart:async';
-import 'dart:html' as html;
-import 'package:image_whisperer/image_whisperer.dart';
-import 'package:jdarwish_dashboard_web/shared/models/fileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 
 class NutritionDaysPicsBloc {
   static final NutritionDaysPicsBloc _singleton =
       NutritionDaysPicsBloc._internal();
+
   factory NutritionDaysPicsBloc() {
     return _singleton;
   }
+
   NutritionDaysPicsBloc._internal();
 
   Future<Image> uploadImage() async {

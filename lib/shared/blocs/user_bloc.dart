@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/goal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/user_data.dart';
 
-import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import '../constants.dart';
 
 class UserBloc {
   static final UserBloc _singleton = UserBloc._internal();
+
   factory UserBloc() {
     return _singleton;
   }
+
   UserBloc._internal();
 
   User fbUser;
@@ -175,7 +177,6 @@ class UserBloc {
   }
 
   Future<void> saveMessagingToken(String token) async {
-    print('error?');
     await FirebaseFirestore.instance
         .collection("apps")
         .doc(appId)
@@ -201,5 +202,5 @@ class UserBloc {
     );
   }
 
-  bool get isAdmin => fbUser.uid == AppBloc().adminId;
+  bool get isAdmin => (fbUser?.uid ?? "notadmin") == AppBloc().adminId;
 }

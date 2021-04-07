@@ -1,20 +1,22 @@
-import 'dart:html';
-import 'dart:io';
-
-import 'package:firebase/firebase.dart' as fb;
-import 'package:get/get.dart';
-import 'package:file_picker/file_picker.dart';
-
-import 'package:image_picker_web/image_picker_web.dart';
 import 'dart:async';
 import 'dart:html' as html;
 
+import 'package:firebase/firebase.dart' as fb;
+import 'package:get/get.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+
 class ExerciseVideoBloc {
   static final ExerciseVideoBloc _singleton = ExerciseVideoBloc._internal();
+
   factory ExerciseVideoBloc() {
     return _singleton;
   }
+
   ExerciseVideoBloc._internal();
+
+  String name;
+  html.File file;
+  html.File mobileFile;
 
   Future<String> uploadVideo() async {
     // HTML input element
@@ -25,15 +27,6 @@ class ExerciseVideoBloc {
       file = file1;
       return name != null || name != "" ? name : "";
     } else {
-      /* var file2 = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['MOV', 'MP4'],
-          allowMultiple: false);
-      if (file2 != null) {
-        mobileFile = file2.files.single;
-        name = file2.files.single.name;
-        return name;
-      } */
       final completer = Completer<List<String>>();
       final html.InputElement input = html.document.createElement('input');
       input
@@ -46,7 +39,7 @@ class ExerciseVideoBloc {
         final List<html.File> files = input.files;
         mobileFile = files.first;
         Iterable<Future<String>> resultsFutures = files.map((file3) {
-          final reader = FileReader();
+          final reader = html.FileReader();
           reader.readAsDataUrl(file3);
           reader.onError.listen((error) => completer.completeError(error));
           return reader.onLoad.first.then((_) => reader.result as String);
@@ -109,8 +102,4 @@ class ExerciseVideoBloc {
       }
     }
   }
-
-  String name;
-  html.File file;
-  html.File mobileFile;
 }

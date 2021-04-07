@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/models/product.dart';
 
 import '../constants.dart';

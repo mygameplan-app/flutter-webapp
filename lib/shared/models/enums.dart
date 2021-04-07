@@ -1,3 +1,2 @@
-enum Functions { Duplicate, Delete, Edit, ReOrder }
-enum Functions1 { Duplicate, Delete, Edit, ReOrder }
-enum PopUpFunctions { Add, Edit }
+enum Functions { duplicate, delete, edit, reorder }
+enum PopUpFunctions { add, edit }

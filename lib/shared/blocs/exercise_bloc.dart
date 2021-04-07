@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
 
 import '../constants.dart';
@@ -16,18 +15,19 @@ class ExerciseBloc {
   List<Program> exercisePrograms = [];
 
   Future<void> fetchExerciseData() async {
-    List<Future> futures = [];
-    exercisePrograms.clear();
     exercisePrograms = [];
+
     final programDocs = await FirebaseFirestore.instance
         .collection('apps')
         .doc(appId)
         .collection('exercisePrograms')
         .get();
-    print(programDocs.docs.length);
+
+    List<Future> futures = [];
     for (var p in programDocs.docs) {
       Program program = Program.fromJson(p.data())..id = p.id;
       exercisePrograms.add(program);
+
       final dayFuture = p.reference.collection('days').get().then((dayDocs) {
         for (var d in dayDocs.docs) {
           TrainingDay day = TrainingDay.fromJson(d.data())..id = d.id;

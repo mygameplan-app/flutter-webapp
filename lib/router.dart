@@ -1,5 +1,5 @@
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/views/home_view.dart';
 import 'package:jdarwish_dashboard_web/views/login.dart';
 import 'package:jdarwish_dashboard_web/views/pages/conversations_page.dart';
@@ -64,7 +64,7 @@ class Router {
       case '/exercisevideo':
         return GetPageRoute(
           settings: settings,
-          page: () => CustomVideoPlayer(),
+          page: () => YoutubeVideoPlayer(),
         );
     }
   }

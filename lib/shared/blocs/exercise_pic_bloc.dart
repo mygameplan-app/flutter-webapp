@@ -1,22 +1,20 @@
+import 'dart:async';
+import 'dart:html' as html;
 import 'dart:ui';
 
 import 'package:firebase/firebase.dart' as fb;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:io';
-import 'dart:async';
-import 'dart:html' as html;
-import 'package:image_whisperer/image_whisperer.dart';
-import 'package:jdarwish_dashboard_web/shared/models/fileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 
 class ExercisePicsBloc {
   static final ExercisePicsBloc _singleton = ExercisePicsBloc._internal();
+
   factory ExercisePicsBloc() {
     return _singleton;
   }
+
   ExercisePicsBloc._internal();
 
   Future<Image> uploadImage() async {
@@ -52,12 +50,8 @@ class ExercisePicsBloc {
           await reference.put(file).future;
 
       var imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
-
-      var url = imageUri.toString();
-
-      return url;
+      return imageUri.toString();
     }
-    return "";
   }
 
   Image image;

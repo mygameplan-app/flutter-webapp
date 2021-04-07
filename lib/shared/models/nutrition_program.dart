@@ -8,14 +8,8 @@ class NutritionProgram {
   Color themeColor;
   String id;
   List<NutritionDay> nutritionDays;
-  NutritionProgram(name, order, themeColor, id, nutritionDays) {
-    this.name = name != null ? name : '';
-    this.order = order != null ? order : 0;
-    this.themeColor = themeColor != null ? themeColor : Colors.blue;
-    this.id = id != null ? id : '';
-    this.nutritionDays = nutritionDays != null ? nutritionDays : [];
-  }
-  NutritionProgram.init2({
+
+  NutritionProgram({
     this.name,
     this.order,
     this.themeColor,
@@ -24,7 +18,7 @@ class NutritionProgram {
   });
 
   factory NutritionProgram.fromJson(Map<String, dynamic> json) {
-    return NutritionProgram.init2(
+    return NutritionProgram(
       name: json['name'] != null ? json['name'] : '',
       order: json['order'] != null ? json['order'] : 0,
       themeColor: json['themeColor'] != null

@@ -1,19 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_pic_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/exercise_video_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-
-import 'package:uuid/uuid.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
-import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'dart:ui';
+import 'package:uuid/uuid.dart';
 
 class ExercisePopup extends StatefulWidget {
   final TrainingDay trainingday;
@@ -47,6 +42,7 @@ class MyExercisePopup extends State<ExercisePopup> {
 
   ExerciseBloc exerciseBloc = ExerciseBloc();
   ExercisePicsBloc exercisePicsBloc = ExercisePicsBloc();
+
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -57,7 +53,7 @@ class MyExercisePopup extends State<ExercisePopup> {
   }
 
   _setUpFunction() {
-    if (widget.popUpFunctions == PopUpFunctions.Edit) {
+    if (widget.popUpFunctions == PopUpFunctions.edit) {
       image = Image.network(widget.exercise.imageUrl);
 
       titleController.text = widget.exercise.title;
@@ -112,7 +108,7 @@ class MyExercisePopup extends State<ExercisePopup> {
             backgroundColor: Colors.black,
             titleStyle: TextStyle(color: Colors.white, fontSize: 20)),
         context: context,
-        title: widget.popUpFunctions == PopUpFunctions.Add
+        title: widget.popUpFunctions == PopUpFunctions.add
             ? "Add Exercise"
             : "Edit Exercise",
         content: StatefulBuilder(builder: (context, setState) {
@@ -189,7 +185,7 @@ class MyExercisePopup extends State<ExercisePopup> {
                 }
 
                 switch (widget.popUpFunctions) {
-                  case PopUpFunctions.Add:
+                  case PopUpFunctions.add:
                     String id = Uuid().v1();
                     String subtitle = "";
                     int order = widget.count != null ? widget.count : 0;
@@ -207,7 +203,7 @@ class MyExercisePopup extends State<ExercisePopup> {
                     int count = 0;
                     Navigator.of(context).popUntil((_) => count++ >= 2);
                     return;
-                  case PopUpFunctions.Edit:
+                  case PopUpFunctions.edit:
                     widget.exercise.videoUrl = videoUrl1;
                     widget.exercise.title = titleController.text;
                     widget.exercise.description = descriptionController.text;

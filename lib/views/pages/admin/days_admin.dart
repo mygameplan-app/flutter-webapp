@@ -1,43 +1,38 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/days_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/constants.dart';
-import 'dart:ui';
-
 import 'package:uuid/uuid.dart';
 
 import 'exercises_admin.dart';
 
 class DaysAdmin extends StatefulWidget {
   final Program program;
+
   DaysAdmin({@required this.program});
+
   MyDaysAdmin createState() => MyDaysAdmin();
 }
 
 class MyDaysAdmin extends State<DaysAdmin> {
-  //Variables
-  List<DocumentSnapshot> _docs;
   List<TrainingDay> days = [];
   bool isReordering = false;
-  ExerciseBloc exercisebloc = ExerciseBloc();
-  //ListView
+
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     days = querySnapshot.docs
         .map<TrainingDay>((day) => TrainingDay.fromJson(day.data()))
         .toList();
-    _docs = querySnapshot.docs;
     List<Widget> containers = [];
     containers.add(Container(
       height: 100,
@@ -49,7 +44,7 @@ class MyDaysAdmin extends State<DaysAdmin> {
         textColor: Colors.white,
         onPressed: () {
           DaysPopup daysPopup = DaysPopup(
-            popUpFunctions: PopUpFunctions.Add,
+            popUpFunctions: PopUpFunctions.add,
             id: widget.program.id,
             count: days.length,
           );
@@ -90,25 +85,25 @@ class MyDaysAdmin extends State<DaysAdmin> {
                       color: Colors.white,
                       size: 20,
                     ),
-                    onSelected: (Functions1 result) {
+                    onSelected: (Functions result) {
                       doPopUp(result, day);
                     },
                     itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<Functions1>>[
-                      const PopupMenuItem<Functions1>(
-                        value: Functions1.Edit,
+                        <PopupMenuEntry<Functions>>[
+                      const PopupMenuItem<Functions>(
+                        value: Functions.edit,
                         child: Text('Edit'),
                       ),
-                      const PopupMenuItem<Functions1>(
-                        value: Functions1.Duplicate,
+                      const PopupMenuItem<Functions>(
+                        value: Functions.duplicate,
                         child: Text('Duplicate'),
                       ),
-                      const PopupMenuItem<Functions1>(
-                        value: Functions1.Delete,
+                      const PopupMenuItem<Functions>(
+                        value: Functions.delete,
                         child: Text('Delete'),
                       ),
-                      const PopupMenuItem<Functions1>(
-                          value: Functions1.ReOrder, child: Text('Reorder'))
+                      const PopupMenuItem<Functions>(
+                          value: Functions.reorder, child: Text('Reorder'))
                     ],
                   ),
                 ),
@@ -143,9 +138,9 @@ class MyDaysAdmin extends State<DaysAdmin> {
     return Column(children: containers);
   }
 
-  void doPopUp(Functions1 result, TrainingDay trainingDay) async {
+  void doPopUp(Functions result, TrainingDay trainingDay) async {
     switch (result) {
-      case Functions1.Delete:
+      case Functions.delete:
         await FirebaseFirestore.instance
             .collection('apps')
             .doc(appId)
@@ -155,10 +150,10 @@ class MyDaysAdmin extends State<DaysAdmin> {
             .doc(trainingDay.id)
             .delete();
         return;
-      case Functions1.Edit:
+      case Functions.edit:
         print(widget.program.id);
         DaysPopup daysPopup = DaysPopup(
-            popUpFunctions: PopUpFunctions.Edit,
+            popUpFunctions: PopUpFunctions.edit,
             trainingday: trainingDay,
             id: widget.program.id,
             count: days.length);
@@ -166,14 +161,14 @@ class MyDaysAdmin extends State<DaysAdmin> {
             context, TransparentRoute4(builder: (context) => daysPopup));
         return;
 
-      case Functions1.Duplicate:
+      case Functions.duplicate:
         TrainingDay newtrainingDay = trainingDay;
         newtrainingDay.id = Uuid().v1();
         newtrainingDay.order = trainingDay.order;
-        exercisebloc.addTrainingDay(newtrainingDay, widget.program.id);
+        ExerciseBloc().addTrainingDay(newtrainingDay, widget.program.id);
         return;
 
-      case Functions1.ReOrder:
+      case Functions.reorder:
         setState(() {
           isReordering = true;
         });
@@ -236,7 +231,7 @@ class MyDaysAdmin extends State<DaysAdmin> {
                       textColor: Colors.white,
                       onPressed: () async {
                         DaysPopup daysPopup = DaysPopup(
-                            popUpFunctions: PopUpFunctions.Add,
+                            popUpFunctions: PopUpFunctions.add,
                             id: widget.program.id,
                             count: days.length);
                         await Navigator.push(context,
@@ -295,6 +290,7 @@ class MyDaysAdmin extends State<DaysAdmin> {
   }
 
   void updateListinFirestore() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

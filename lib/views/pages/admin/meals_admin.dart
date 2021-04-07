@@ -1,21 +1,20 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
-
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/exercise_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/meals_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:jdarwish_dashboard_web/shared/constants.dart';
-import 'dart:ui';
-import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:uuid/uuid.dart';
 
 import 'ingredients_admin_page.dart';
@@ -23,7 +22,9 @@ import 'ingredients_admin_page.dart';
 class MealAdmin extends StatefulWidget {
   final NutritionProgram nutritionProgram;
   final NutritionDay nutritionDay;
+
   MealAdmin({@required this.nutritionProgram, @required this.nutritionDay});
+
   MyMealAdmin createState() => MyMealAdmin();
 }
 
@@ -31,7 +32,7 @@ class MyMealAdmin extends State<MealAdmin> {
   //Variables
   List<Meal> meals = [];
   bool isReordering = false;
-  NutritionBloc nutritionbloc = NutritionBloc();
+
   //ListView
   Widget loadListView(QuerySnapshot querySnapshot, String id) {
     meals = querySnapshot.docs
@@ -50,7 +51,7 @@ class MyMealAdmin extends State<MealAdmin> {
           textColor: Colors.white,
           onPressed: () {
             MealsPopup mealsPopup = MealsPopup(
-              popUpFunctions: PopUpFunctions.Add,
+              popUpFunctions: PopUpFunctions.add,
               count: meals.length,
               nutritionProgram: widget.nutritionProgram,
               nutritionday: widget.nutritionDay,
@@ -90,25 +91,25 @@ class MyMealAdmin extends State<MealAdmin> {
                         color: Colors.white,
                         size: 20,
                       ),
-                      onSelected: (Functions1 result) {
+                      onSelected: (Functions result) {
                         doPopUp(result, meal);
                       },
                       itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<Functions1>>[
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Edit,
+                          <PopupMenuEntry<Functions>>[
+                        const PopupMenuItem<Functions>(
+                          value: Functions.edit,
                           child: Text('Edit'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Duplicate,
+                        const PopupMenuItem<Functions>(
+                          value: Functions.duplicate,
                           child: Text('Duplicate'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Delete,
+                        const PopupMenuItem<Functions>(
+                          value: Functions.delete,
                           child: Text('Delete'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                            value: Functions1.ReOrder, child: Text('Reorder'))
+                        const PopupMenuItem<Functions>(
+                            value: Functions.reorder, child: Text('Reorder'))
                       ],
                     ),
                   ),
@@ -158,9 +159,9 @@ class MyMealAdmin extends State<MealAdmin> {
     );
   }
 
-  void doPopUp(Functions1 result, Meal meal) async {
+  void doPopUp(Functions result, Meal meal) async {
     switch (result) {
-      case Functions1.Delete:
+      case Functions.delete:
         await FirebaseFirestore.instance
             .collection('apps')
             .doc(appId)
@@ -173,9 +174,9 @@ class MyMealAdmin extends State<MealAdmin> {
             .delete();
 
         return;
-      case Functions1.Edit:
+      case Functions.edit:
         MealsPopup mealsPopup = MealsPopup(
-          popUpFunctions: PopUpFunctions.Edit,
+          popUpFunctions: PopUpFunctions.edit,
           count: meals.length,
           meal: meal,
           nutritionday: widget.nutritionDay,
@@ -185,14 +186,14 @@ class MyMealAdmin extends State<MealAdmin> {
             context, TransparentRoute5(builder: (context) => mealsPopup));
 
         return;
-      case Functions1.Duplicate:
+      case Functions.duplicate:
         Meal newMeal = meal;
         newMeal.id = Uuid().v1();
         newMeal.order = meals != null ? meals.length : 0;
-        nutritionbloc.addMeal(
-            widget.nutritionDay, widget.nutritionProgram, newMeal);
+        NutritionBloc()
+            .addMeal(widget.nutritionDay, widget.nutritionProgram, newMeal);
         return;
-      case Functions1.ReOrder:
+      case Functions.reorder:
         setState(() {
           isReordering = true;
         });
@@ -254,7 +255,7 @@ class MyMealAdmin extends State<MealAdmin> {
                       textColor: Colors.white,
                       onPressed: () async {
                         MealsPopup mealsPopup = MealsPopup(
-                          popUpFunctions: PopUpFunctions.Add,
+                          popUpFunctions: PopUpFunctions.add,
                           count: meals.length,
                           nutritionProgram: widget.nutritionProgram,
                           nutritionday: widget.nutritionDay,

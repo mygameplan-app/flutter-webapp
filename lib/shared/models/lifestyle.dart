@@ -1,40 +1,39 @@
-import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
-
-class TrainingDay {
+class LifestyleItem {
   String title;
-  int order;
   String subtitle;
   String id;
   String imageUrl;
-  List<Exercise> exercises;
+  String videoUrl;
+  int order;
 
-  TrainingDay({
+  LifestyleItem({
     this.title,
-    this.order,
     this.subtitle,
     this.imageUrl,
+    this.videoUrl,
     this.id,
-    this.exercises,
+    this.order,
   });
 
-  factory TrainingDay.fromJson(Map<String, dynamic> json) {
-    return TrainingDay(
+  factory LifestyleItem.fromJson(Map<String, dynamic> json) {
+    return LifestyleItem(
       title: json['title'],
-      order: json['order'] ?? 999,
       subtitle: json['subtitle'],
       imageUrl: json['imageUrl'],
-      id: json['id'],
-      exercises: [],
+      videoUrl: json['videoUrl'],
+      order: json['order'] ?? 999,
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
-    data['order'] = this.order;
     data['subtitle'] = this.subtitle;
+    data['order'] = this.order;
     data['imageUrl'] = this.imageUrl;
+    data['videoUrl'] = this.videoUrl;
     data['id'] = this.id;
+
     return data;
   }
 }

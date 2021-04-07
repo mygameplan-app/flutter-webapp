@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
@@ -74,6 +75,10 @@ class _NutritionDayViewState extends State<NutritionDayView> {
                     onTap: () => navigate(
                       context,
                       MealPage(meal: meal),
+                    ),
+                    onPhotoTap: () => Get.toNamed(
+                      '/exercisevideo',
+                      arguments: meal.videoUrl,
                     ),
                   ),
               ],

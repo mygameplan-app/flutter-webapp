@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:jdarwish_dashboard_web/shared/models/product.dart';
-import 'package:jdarwish_dashboard_web/shared/models/product_category1.dart';
+import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
+
 import '../constants.dart';
 
 class ProductCategoriesBloc {
   static final ProductCategoriesBloc _singleton =
       ProductCategoriesBloc._internal();
+
   factory ProductCategoriesBloc() {
     return _singleton;
   }
+
   ProductCategoriesBloc._internal();
 
   List<ProductCategory> categories = [];

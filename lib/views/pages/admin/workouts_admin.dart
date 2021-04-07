@@ -1,35 +1,31 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
-
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/drawer.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/program_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/product_admin.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:ui';
-import 'admin_page.dart';
+
 import 'days_admin.dart';
-import 'nutrition_admin.dart';
-import 'package:jdarwish_dashboard_web/shared/constants.dart';
 
 class WorkoutsAdmin extends StatefulWidget {
   MyWorkoutsAdmin createState() => MyWorkoutsAdmin();
 }
 
 class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
-  ExerciseBloc exerciseBloc = ExerciseBloc();
   bool isReordering = false;
   List<Program> programs = [];
-  //Product Categories Stream
+
   StreamBuilder courseFetcher() {
-    void doPopUp(Functions1 result, Program program) async {
+    void doPopUp(Functions result, Program program) async {
       switch (result) {
-        case Functions1.Delete:
+        case Functions.delete:
           await FirebaseFirestore.instance
               .collection('apps')
               .doc(appId)
@@ -38,9 +34,9 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
               .delete();
 
           return;
-        case Functions1.Edit:
+        case Functions.edit:
           ProgramPopup programPopup = ProgramPopup(
-            popUpFunctions: PopUpFunctions.Edit,
+            popUpFunctions: PopUpFunctions.edit,
             count: programs.length,
             program: program,
           );
@@ -48,14 +44,14 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
               context, TransparentRoute2(builder: (context) => programPopup));
 
           return;
-        case Functions1.Duplicate:
+        case Functions.duplicate:
           Program newProgram = program;
           newProgram.id = Uuid().v1();
           newProgram.order = programs != null ? programs.length : 0;
-          exerciseBloc.addProgram(newProgram);
+          ExerciseBloc().addProgram(newProgram);
           return;
 
-        case Functions1.ReOrder:
+        case Functions.reorder:
           setState(() {
             isReordering = true;
           });
@@ -93,25 +89,25 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
                   color: Colors.white,
                   size: 20,
                 ),
-                onSelected: (Functions1 result) {
+                onSelected: (Functions result) {
                   doPopUp(result, program);
                 },
                 itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<Functions1>>[
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Edit,
+                    <PopupMenuEntry<Functions>>[
+                  const PopupMenuItem<Functions>(
+                    value: Functions.edit,
                     child: Text('Edit'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Duplicate,
+                  const PopupMenuItem<Functions>(
+                    value: Functions.duplicate,
                     child: Text('Duplicate'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                    value: Functions1.Delete,
+                  const PopupMenuItem<Functions>(
+                    value: Functions.delete,
                     child: Text('Delete'),
                   ),
-                  const PopupMenuItem<Functions1>(
-                      value: Functions1.ReOrder, child: Text('Reorder'))
+                  const PopupMenuItem<Functions>(
+                      value: Functions.reorder, child: Text('Reorder'))
                 ],
               ),
               trailing: Icon(
@@ -159,7 +155,7 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
                   textColor: Colors.white,
                   onPressed: () {
                     ProgramPopup programPopup = ProgramPopup(
-                      popUpFunctions: PopUpFunctions.Add,
+                      popUpFunctions: PopUpFunctions.add,
                       count: programs.length,
                     );
                     Navigator.push(context,

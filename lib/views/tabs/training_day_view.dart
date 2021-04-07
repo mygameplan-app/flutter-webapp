@@ -4,7 +4,6 @@ import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
 import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/photo_tile.dart';
-import 'package:jdarwish_dashboard_web/views/pages/custom_video_player.dart';
 import 'package:jdarwish_dashboard_web/views/pages/exercise_page.dart';
 
 class TrainingDayView extends StatefulWidget {
@@ -72,8 +71,10 @@ class _TrainingDayViewState extends State<TrainingDayView> {
                     title: exercise.title,
                     subtitle: exercise.description ?? '',
                     photoUrl: exercise.imageUrl,
-                    onPhotoTap: () => Get.toNamed('/exercisevideo',
-                        arguments: exercise.videoUrl),
+                    onPhotoTap: exercise.videoUrl ?? "" != ""
+                        ? () => Get.toNamed('/exercisevideo',
+                            arguments: exercise.videoUrl)
+                        : null,
                     onTap: () => navigate(
                       context,
                       ExercisePage(exercise: exercise),

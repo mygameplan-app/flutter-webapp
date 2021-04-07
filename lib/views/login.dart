@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,18 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:get/get.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/goal_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/message_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/user_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:rxdart/rxdart.dart';
-import 'home_view.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -284,6 +280,7 @@ class _LoginViewState extends State<LoginView> {
     await Future.wait([
       ExerciseBloc().fetchExerciseData(),
       NutritionBloc().fetchNutritionData(),
+      LifestyleBloc().fetchLifestyleData(),
       ProductCategoriesBloc().fetchCategories(),
       UserBloc().loadUserInfo(),
       GoalBloc().fetchGoals(),

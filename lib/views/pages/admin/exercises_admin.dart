@@ -1,22 +1,19 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
-import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/days_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/exercise_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/constants.dart';
-import 'dart:ui';
-
 import 'package:uuid/uuid.dart';
 
 class ExerciseAdmin extends StatefulWidget {
@@ -27,6 +24,7 @@ class ExerciseAdmin extends StatefulWidget {
     @required this.program,
     @required this.trainingDay,
   });
+
   MyExerciseAdmin createState() => MyExerciseAdmin();
 }
 
@@ -34,7 +32,7 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
   //Variables
   List<Exercise> exercises = [];
   bool isReordering = false;
-  ExerciseBloc exercisebloc = ExerciseBloc();
+
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     exercises = querySnapshot.docs
@@ -54,7 +52,7 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
           textColor: Colors.white,
           onPressed: () {
             ExercisePopup exercisePopup = ExercisePopup(
-              popUpFunctions: PopUpFunctions.Add,
+              popUpFunctions: PopUpFunctions.add,
               count: exercises.length,
               program: widget.program,
               trainingday: widget.trainingDay,
@@ -94,25 +92,25 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
                         color: Colors.white,
                         size: 20,
                       ),
-                      onSelected: (Functions1 result) {
+                      onSelected: (Functions result) {
                         doPopUp(result, exercise);
                       },
                       itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<Functions1>>[
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Edit,
+                          <PopupMenuEntry<Functions>>[
+                        const PopupMenuItem<Functions>(
+                          value: Functions.edit,
                           child: Text('Edit'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Duplicate,
+                        const PopupMenuItem<Functions>(
+                          value: Functions.duplicate,
                           child: Text('Duplicate'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                          value: Functions1.Delete,
+                        const PopupMenuItem<Functions>(
+                          value: Functions.delete,
                           child: Text('Delete'),
                         ),
-                        const PopupMenuItem<Functions1>(
-                            value: Functions1.ReOrder, child: Text('Reorder'))
+                        const PopupMenuItem<Functions>(
+                            value: Functions.reorder, child: Text('Reorder'))
                       ],
                     ),
                   ),
@@ -173,9 +171,9 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
         });
   }
 
-  void doPopUp(Functions1 result, Exercise exercise) async {
+  void doPopUp(Functions result, Exercise exercise) async {
     switch (result) {
-      case Functions1.Delete:
+      case Functions.delete:
         await FirebaseFirestore.instance
             .collection('apps')
             .doc(appId)
@@ -188,9 +186,9 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
             .delete();
 
         return;
-      case Functions1.Edit:
+      case Functions.edit:
         ExercisePopup exercisePopup = ExercisePopup(
-          popUpFunctions: PopUpFunctions.Edit,
+          popUpFunctions: PopUpFunctions.edit,
           exercise: exercise,
           count: exercises.length,
           trainingday: widget.trainingDay,
@@ -200,13 +198,14 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
             context, TransparentRoute5(builder: (context) => exercisePopup));
 
         return;
-      case Functions1.Duplicate:
+      case Functions.duplicate:
         Exercise newExercise = exercise;
         newExercise.id = Uuid().v1();
         newExercise.order = exercises != null ? exercises.length : 0;
-        exercisebloc.addExercise(widget.trainingDay, widget.program, exercise);
+        ExerciseBloc()
+            .addExercise(widget.trainingDay, widget.program, exercise);
         return;
-      case Functions1.ReOrder:
+      case Functions.reorder:
         setState(() {
           isReordering = true;
         });
@@ -269,7 +268,7 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
                       textColor: Colors.white,
                       onPressed: () async {
                         ExercisePopup exercisePopup = ExercisePopup(
-                          popUpFunctions: PopUpFunctions.Add,
+                          popUpFunctions: PopUpFunctions.add,
                           program: widget.program,
                           count: exercises.length,
                           trainingday: widget.trainingDay,

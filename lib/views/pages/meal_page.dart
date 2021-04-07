@@ -15,113 +15,105 @@ class MealPage extends StatefulWidget {
 class _MealPageState extends State<MealPage> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double textSize;
-        if (constraints.minWidth > 400) {
-          textSize = 22;
-        } else {
-          textSize = 16;
-        }
-        return Scaffold(
-            backgroundColor: Colors.black,
-            body: CustomScrollView(physics: BouncingScrollPhysics(), slivers: [
-              SliverAppBar(
-                stretch: true,
-                expandedHeight: 240,
-                toolbarHeight: kToolbarHeight + 24,
-                onStretchTrigger: () {
-                  return;
-                },
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: <StretchMode>[
-                    StretchMode.zoomBackground,
-                    StretchMode.blurBackground,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: CustomScrollView(
+        physics: BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            stretch: true,
+            expandedHeight: 240,
+            toolbarHeight: kToolbarHeight + 24,
+            onStretchTrigger: () {
+              return;
+            },
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              stretchModes: <StretchMode>[
+                StretchMode.zoomBackground,
+                StretchMode.blurBackground,
 //                  StretchMode.fadeTitle,
+              ],
+              centerTitle: true,
+              title: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: widget.meal.title.toUpperCase(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '\n${widget.meal.subtitle}',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                   ],
-                  centerTitle: true,
-                  title: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: widget.meal.title.toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '\n${widget.meal.subtitle}',
-                          style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ),
+              background: Image.network(
+                widget.meal.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 10, top: 10),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Directions',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    ),
-                  ),
-                  background: Image.network(
-                    widget.meal.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(bottom: 10, top: 10),
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Text(
-                              'Directions',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(widget.meal.description),
-                          Center(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 15.0, bottom: 8),
-                              child: Text(
-                                'Ingredients'.toUpperCase(),
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                    for (Ingredient ingredient in widget.meal.ingredients)
-                      Column(
-                        children: [
-                          widget.meal.ingredients.indexOf(ingredient) == 0
-                              ? Divider(
-                                  indent: 5,
-                                  color: Colors.grey,
-                                  height: 1,
-                                  thickness: 1,
-                                )
-                              : Container(),
-                          PhotoTile(
-                              title: ingredient.title,
-                              titleSize: 16,
-                              subtitle: '',
-                              photoUrl: ingredient.imageUrl,
-                              onTap: () {}),
-                          Divider(
-                            indent: 5,
-                            color: Colors.grey,
-                            height: 1,
-                            thickness: 1,
-                          )
-                        ],
-                      )
-                  ],
+                      Text(widget.meal.description),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15.0, bottom: 8),
+                          child: Text(
+                            'Ingredients'.toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ]));
-      },
+                for (Ingredient ingredient in widget.meal.ingredients)
+                  Column(
+                    children: [
+                      widget.meal.ingredients.indexOf(ingredient) == 0
+                          ? Divider(
+                              indent: 5,
+                              color: Colors.grey,
+                              height: 1,
+                              thickness: 1,
+                            )
+                          : Container(),
+                      PhotoTile(
+                          title: ingredient.title,
+                          subtitle: '',
+                          photoUrl: ingredient.imageUrl,
+                          onTap: () {}),
+                      Divider(
+                        indent: 5,
+                        color: Colors.grey,
+                        height: 1,
+                        thickness: 1,
+                      )
+                    ],
+                  )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
