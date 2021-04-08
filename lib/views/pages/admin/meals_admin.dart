@@ -17,8 +17,6 @@ import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:uuid/uuid.dart';
 
-import 'ingredients_admin_page.dart';
-
 class MealAdmin extends StatefulWidget {
   final NutritionProgram nutritionProgram;
   final NutritionDay nutritionDay;
@@ -140,15 +138,15 @@ class MyMealAdmin extends State<MealAdmin> {
             size: 25,
             color: Colors.grey,
           ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => IngredientsAdmin(
-                        nutritionDay: widget.nutritionDay,
-                        meal: meal,
-                        nutritionProgram: widget.nutritionProgram)));
-          },
+          // onTap: () {
+          //   Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (context) => IngredientsAdmin(
+          //               nutritionDay: widget.nutritionDay,
+          //               meal: meal,
+          //               nutritionProgram: widget.nutritionProgram)));
+          // },
         ),
       ));
       counter += 1;
@@ -168,7 +166,7 @@ class MyMealAdmin extends State<MealAdmin> {
             .collection('nutritionPrograms')
             .doc(widget.nutritionProgram.id)
             .collection('days')
-            .doc(widget.nutritionDay.id)
+            .doc("defaultDay")
             .collection('meals')
             .doc(meal.id)
             .delete();
@@ -211,7 +209,7 @@ class MyMealAdmin extends State<MealAdmin> {
         .collection('nutritionPrograms')
         .doc(widget.nutritionProgram.id)
         .collection('days')
-        .doc(widget.nutritionDay.id)
+        .doc("defaultDay")
         .collection('meals')
         .orderBy('order');
     return StreamBuilder<QuerySnapshot>(
@@ -309,7 +307,7 @@ class MyMealAdmin extends State<MealAdmin> {
             .collection('nutritionPrograms')
             .doc(widget.nutritionProgram.id)
             .collection('days')
-            .doc(widget.nutritionDay.id)
+            .doc("defaultDay")
             .collection('meals'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
@@ -321,8 +319,7 @@ class MyMealAdmin extends State<MealAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '${widget.nutritionProgram.name}/ ${widget.nutritionDay.title}'),
+        title: Text(widget.nutritionProgram.name ?? ''),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,

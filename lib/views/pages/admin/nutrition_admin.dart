@@ -6,14 +6,14 @@ import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/nutrition_categoires_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
+import 'package:jdarwish_dashboard_web/views/pages/admin/meals_admin.dart';
 import 'package:uuid/uuid.dart';
-
-import 'nutrition_days_admin.dart';
 
 class NutritionCategoriesAdmin extends StatefulWidget {
   MyNutritionCategoriesAdmin createState() => MyNutritionCategoriesAdmin();
@@ -79,11 +79,14 @@ class MyNutritionCategoriesAdmin extends State<NutritionCategoriesAdmin> {
           child: ListTile(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NutritionDaysAdmin(
-                              nutritionProgram: nutritionProgram,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MealAdmin(
+                      nutritionDay: NutritionDay(),
+                      nutritionProgram: nutritionProgram,
+                    ),
+                  ),
+                );
               },
               title: Text(nutritionProgram.name),
               leading: PopupMenuButton(

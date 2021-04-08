@@ -62,7 +62,16 @@ class LifestyleBloc {
         .collection('lifestyle')
         .doc(programId)
         .collection('days')
-        .doc(dayId)
+        .doc("defaultDay")
+        .set({"order": 0}, options);
+
+    await FirebaseFirestore.instance
+        .collection('apps')
+        .doc(appId)
+        .collection('lifestyle')
+        .doc(programId)
+        .collection('days')
+        .doc("defaultDay")
         .collection('items')
         .doc(item.id)
         .set(item.toJson(), options);
@@ -77,7 +86,7 @@ class LifestyleBloc {
         .collection('lifestyle')
         .doc(programId)
         .collection('days')
-        .doc(dayId)
+        .doc("defaultDay")
         .collection('items')
         .doc(item.id)
         .set(item.toJson(), options)

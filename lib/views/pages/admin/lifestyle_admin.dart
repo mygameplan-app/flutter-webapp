@@ -42,7 +42,7 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
               .collection('lifestyle')
               .doc(widget.lifestyleProgram.id)
               .collection('days')
-              .doc(widget.lifestyleDay.id)
+              .doc("defaultDay")
               .collection('items')
               .doc(lifestyleItem.id)
               .delete();
@@ -135,7 +135,7 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
         .collection('lifestyle')
         .doc(widget.lifestyleProgram.id)
         .collection('days')
-        .doc(widget.lifestyleDay.id)
+        .doc("defaultDay")
         .collection('items')
         .orderBy('order');
     return StreamBuilder(
@@ -209,12 +209,12 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
             .collection('lifestyle')
             .doc(widget.lifestyleProgram.id)
             .collection('days')
-            .doc(widget.lifestyleDay.id)
+            .doc("defaultDay")
             .collection('items'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
           return getlistTile(LifestyleItem.fromJson(doc.data()), index);
-        });
+        },);
   }
 
   @override

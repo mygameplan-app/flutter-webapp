@@ -35,6 +35,8 @@ class NutritionBloc {
           .get()
           .then((dayDocs) async {
         for (var d in dayDocs.docs) {
+          print('made it here');
+          print(d.id);
           print(d.data().toString());
           NutritionDay day = NutritionDay.fromJson(d.data())..id = d.id;
           program.nutritionDays.add(day);
@@ -123,7 +125,16 @@ class NutritionBloc {
         .collection('nutritionPrograms')
         .doc(nutritionprogram.id)
         .collection('days')
-        .doc(nutritionDay.id)
+        .doc("defaultDay")
+        .set({"order": 0}, options);
+
+    await FirebaseFirestore.instance
+        .collection('apps')
+        .doc(appId)
+        .collection('nutritionPrograms')
+        .doc(nutritionprogram.id)
+        .collection('days')
+        .doc("defaultDay")
         .collection('meals')
         .doc(meal.id)
         .set(meal.toJson(), options)
@@ -139,7 +150,7 @@ class NutritionBloc {
         .collection('nutritionPrograms')
         .doc(nutritionprogram.id)
         .collection('days')
-        .doc(nutritionDay.id)
+        .doc("defaultDay")
         .collection('meals')
         .doc(meal.id)
         .set(meal.toJson(), options)

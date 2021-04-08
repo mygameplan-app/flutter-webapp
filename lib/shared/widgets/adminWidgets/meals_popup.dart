@@ -223,6 +223,7 @@ class MyMealsPopup extends State<MealsPopup> {
                     widget.meal.title = titleController.text;
                     widget.meal.description = descriptionController.text;
                     widget.meal.imageUrl = imageURL;
+                    widget.meal.videoUrl = videoUrl;
                     nutritionBloc.editMeal(widget.nutritionday,
                         widget.nutritionProgram, widget.meal);
                     int count = 0;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
 import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
@@ -78,6 +80,35 @@ class _NutritionTabState extends State<NutritionTab> {
   }
 
   Widget _daysList(List<NutritionDay> nutritionDays) {
+    if (nutritionDays?.isNotEmpty ?? false) {
+      List<Meal> meals = nutritionDays.first.meals;
+      return Container(
+        child: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            itemCount: meals.length,
+            itemBuilder: ((context, i) {
+              return PhotoTile(
+                title: meals[i].title,
+                subtitle: meals[i].subtitle ?? '',
+                photoUrl: meals[i].imageUrl,
+                // onTap: () => navigate(
+                //     context, NutritionDayView(nutritionDay: nutritionDays[i])),
+                onPhotoTap: () => Get.toNamed(
+                  '/exercisevideo',
+                  arguments: meals[i].videoUrl,
+                ),
+                onTap: () => Get.toNamed(
+                  '/exercisevideo',
+                  arguments: meals[i].videoUrl,
+                ),
+              );
+            }),
+          ),
+        ),
+      );
+    }
     return Container(
       child: MediaQuery.removePadding(
         context: context,

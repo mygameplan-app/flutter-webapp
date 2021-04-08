@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
 import 'package:jdarwish_dashboard_web/shared/navigate_helpers.dart';
@@ -78,6 +80,35 @@ class _LifestyleTabState extends State<LifestyleTab> {
   }
 
   Widget _daysList(List<LifestyleDay> lifestyleDays) {
+    if (lifestyleDays?.isNotEmpty ?? false) {
+      List<LifestyleItem> items = lifestyleDays.first.items;
+      return Container(
+        child: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: ((context, i) {
+              return PhotoTile(
+                title: items[i].title,
+                subtitle: items[i].subtitle ?? '',
+                photoUrl: items[i].imageUrl,
+                // onTap: () => navigate(
+                //     context, NutritionDayView(nutritionDay: nutritionDays[i])),
+                onPhotoTap: () => Get.toNamed(
+                  '/exercisevideo',
+                  arguments: items[i].videoUrl,
+                ),
+                onTap: () => Get.toNamed(
+                  '/exercisevideo',
+                  arguments: items[i].videoUrl,
+                ),
+              );
+            }),
+          ),
+        ),
+      );
+    }
     return Container(
       child: MediaQuery.removePadding(
         context: context,

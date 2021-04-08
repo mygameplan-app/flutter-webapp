@@ -6,12 +6,13 @@ import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/lifestyle_program_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/lifestyle_day_admin.dart';
+import 'package:jdarwish_dashboard_web/views/pages/admin/lifestyle_admin.dart';
 import 'package:uuid/uuid.dart';
 
 class LifestyleCategoriesAdmin extends StatefulWidget {
@@ -78,11 +79,14 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
           child: ListTile(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LifestyleDaysAdmin(
-                              lifestyleProgram: lifestyleProgram,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LifestyleAdmin(
+                      lifestyleDay: LifestyleDay(),
+                      lifestyleProgram: lifestyleProgram,
+                    ),
+                  ),
+                );
               },
               title: Text(lifestyleProgram.name),
               leading: PopupMenuButton(
