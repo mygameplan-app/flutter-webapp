@@ -34,7 +34,7 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     lifestyleDays = querySnapshot.docs
-        .map<LifestyleDay>((day) => LifestyleDay.fromJson(day.data()))
+        .map<LifestyleDay>((day) => LifestyleDay.fromJson(day.data())..id = day.id)
         .toList();
 
     List<Widget> containers = [];

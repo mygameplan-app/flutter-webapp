@@ -147,7 +147,7 @@ class MyNutritionCategoriesAdmin extends State<NutritionCategoriesAdmin> {
 
             nutritionPrograms = querySnapshot.docs
                 .map<NutritionProgram>((nutritionprogram2) =>
-                    NutritionProgram.fromJson(nutritionprogram2.data()))
+                    NutritionProgram.fromJson(nutritionprogram2.data())..id = nutritionprogram2.id)
                 .toList();
 
             return Column(children: [
@@ -203,7 +203,7 @@ class MyNutritionCategoriesAdmin extends State<NutritionCategoriesAdmin> {
             .collection('nutritionPrograms'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(NutritionProgram.fromJson(doc.data()), index);
+          return getlistTile(NutritionProgram.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

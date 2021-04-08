@@ -31,7 +31,7 @@ class MyProductDetailsAdmin extends State<ProductDetailsAdmin> {
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     products = querySnapshot.docs
-        .map<Product>((product) => Product.fromJson(product.data()))
+        .map<Product>((product) => Product.fromJson(product.data())..id = product.id)
         .toList();
 
     List<Widget> containers = [];
@@ -279,7 +279,7 @@ class MyProductDetailsAdmin extends State<ProductDetailsAdmin> {
             .collection('productList'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(Product.fromJson(doc.data()), index);
+          return getlistTile(Product.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

@@ -139,7 +139,8 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
           } else if (stream.hasData == true) {
             QuerySnapshot querySnapshot = stream.data;
             programs = querySnapshot.docs
-                .map<Program>((program) => Program.fromJson(program.data()))
+                .map<Program>((program) =>
+                    Program.fromJson(program.data())..id = program.id)
                 .toList();
 
             return Column(children: [
@@ -204,7 +205,7 @@ class MyWorkoutsAdmin extends State<WorkoutsAdmin> {
             .collection('exercisePrograms'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(Program.fromJson(doc.data()), index);
+          return getlistTile(Program.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

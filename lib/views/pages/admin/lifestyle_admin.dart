@@ -203,18 +203,20 @@ class _LifestyleAdminState extends State<LifestyleAdmin> {
     }
 
     return ReorderableFirebaseList(
-        collection: FirebaseFirestore.instance
-            .collection('apps')
-            .doc(appId)
-            .collection('lifestyle')
-            .doc(widget.lifestyleProgram.id)
-            .collection('days')
-            .doc("defaultDay")
-            .collection('items'),
-        indexKey: 'order',
-        itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(LifestyleItem.fromJson(doc.data()), index);
-        },);
+      collection: FirebaseFirestore.instance
+          .collection('apps')
+          .doc(appId)
+          .collection('lifestyle')
+          .doc(widget.lifestyleProgram.id)
+          .collection('days')
+          .doc("defaultDay")
+          .collection('items'),
+      indexKey: 'order',
+      itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
+        return getlistTile(
+            LifestyleItem.fromJson(doc.data())..id = doc.id, index);
+      },
+    );
   }
 
   @override

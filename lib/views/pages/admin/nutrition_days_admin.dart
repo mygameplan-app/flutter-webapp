@@ -32,7 +32,8 @@ class MyNutritionDaysAdmin extends State<NutritionDaysAdmin> {
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     nutritionDays = querySnapshot.docs
-        .map<NutritionDay>((day) => NutritionDay.fromJson(day.data()))
+        .map<NutritionDay>(
+            (day) => NutritionDay.fromJson(day.data())..id = day.id)
         .toList();
 
     List<Widget> containers = [];
@@ -289,7 +290,8 @@ class MyNutritionDaysAdmin extends State<NutritionDaysAdmin> {
             .collection('days'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(NutritionDay.fromJson(doc.data()), index);
+          return getlistTile(
+              NutritionDay.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

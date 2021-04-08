@@ -34,7 +34,7 @@ class MyMealAdmin extends State<MealAdmin> {
   //ListView
   Widget loadListView(QuerySnapshot querySnapshot, String id) {
     meals = querySnapshot.docs
-        .map<Meal>((meal) => Meal.fromJson(meal.data()))
+        .map<Meal>((meal) => Meal.fromJson(meal.data())..id = meal.id)
         .toList();
 
     List<Widget> containers = [];
@@ -311,7 +311,7 @@ class MyMealAdmin extends State<MealAdmin> {
             .collection('meals'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(Meal.fromJson(doc.data()), index);
+          return getlistTile(Meal.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

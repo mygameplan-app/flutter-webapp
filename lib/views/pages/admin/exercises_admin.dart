@@ -167,7 +167,7 @@ class MyExerciseAdmin extends State<ExerciseAdmin> {
             .collection('exercises'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(Exercise.fromJson(doc.data()), index);
+          return getlistTile(Exercise.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

@@ -147,7 +147,7 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
 
             lifestylePrograms = querySnapshot.docs
                 .map<LifestyleProgram>((lifestyleprogram2) =>
-                    LifestyleProgram.fromJson(lifestyleprogram2.data()))
+                    LifestyleProgram.fromJson(lifestyleprogram2.data())..id = lifestyleprogram2.id)
                 .toList();
 
             return Column(children: [
@@ -203,7 +203,7 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
             .collection('lifestyle'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(LifestyleProgram.fromJson(doc.data()), index);
+          return getlistTile(LifestyleProgram.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

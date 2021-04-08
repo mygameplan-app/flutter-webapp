@@ -142,7 +142,8 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
             QuerySnapshot querySnapshot = stream.data;
             productCategories = querySnapshot.docs
                 .map<ProductCategory>((productcategory) =>
-                    ProductCategory.fromJson(productcategory.data()))
+                    ProductCategory.fromJson(productcategory.data())
+                      ..id = productcategory.id)
                 .toList();
 
             return Column(children: [
@@ -200,7 +201,8 @@ class MyProductCategoriesAdmin extends State<ProductCategoriesAdmin> {
             .collection('products'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(ProductCategory.fromJson(doc.data()), index);
+          return getlistTile(
+              ProductCategory.fromJson(doc.data())..id = doc.id, index);
         });
   }
 
