@@ -27,6 +27,11 @@ class NutritionBloc {
         .get();
 
     for (var p in programDocs.docs) {
+      if (nutritionPrograms.where((prog) => prog.id == p.id).isNotEmpty) {
+        // we already did this. yikes race conditions
+        return;
+      }
+
       NutritionProgram program = NutritionProgram.fromJson(p.data())..id = p.id;
       nutritionPrograms.add(program);
       final dayFuture = p.reference

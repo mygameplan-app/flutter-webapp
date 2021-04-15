@@ -28,6 +28,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    if (UserBloc().fbUser == null || AppBloc().adminId == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed('/', predicate: (route) => false);
+      });
+    }
+
     _tabController = TabController(vsync: this, length: 4);
     super.initState();
   }

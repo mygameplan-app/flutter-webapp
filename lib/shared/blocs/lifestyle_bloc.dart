@@ -25,6 +25,10 @@ class LifestyleBloc {
         .get();
 
     for (var p in programDocs.docs) {
+      if (lifestylePrograms.where((prog) => prog.id == p.id).isNotEmpty) {
+        // we already did this. yikes race conditions
+        return;
+      }
       LifestyleProgram program = LifestyleProgram.fromJson(p.data())..id = p.id;
       lifestylePrograms.add(program);
       final dayFuture = p.reference

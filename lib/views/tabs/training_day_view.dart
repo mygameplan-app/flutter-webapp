@@ -71,7 +71,7 @@ class _TrainingDayViewState extends State<TrainingDayView> {
                     title: exercise.title,
                     subtitle: exercise.description ?? '',
                     photoUrl: exercise.imageUrl,
-                    onPhotoTap: exercise.videoUrl ?? "" != ""
+                    onPhotoTap: ((exercise.videoUrl ?? "") != "")
                         ? () => Get.toNamed('/exercisevideo',
                             arguments: exercise.videoUrl)
                         : null,

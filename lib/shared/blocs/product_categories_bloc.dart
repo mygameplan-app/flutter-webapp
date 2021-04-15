@@ -26,6 +26,10 @@ class ProductCategoriesBloc {
         .get();
     List<Future> futures = [];
     for (var p in categoriesDocs.docs) {
+      if (categories.where((prog) => prog.id == p.id).isNotEmpty) {
+        // we already did this. yikes race conditions
+        return;
+      }
       ProductCategory category = ProductCategory.fromJson(p.data());
       categories.add(category);
       print(category.themeColor);

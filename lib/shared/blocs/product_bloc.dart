@@ -12,7 +12,7 @@ class ProductBloc {
 
   ProductBloc._internal();
 
-  void addProduct2toStore(Product product, String id) async {
+  Future<void> addProduct2toStore(Product product, String id) async {
     final options = SetOptions(merge: true);
     await FirebaseFirestore.instance
         .collection('apps')
@@ -25,7 +25,7 @@ class ProductBloc {
         .then((value) => print('uploaded successfully'));
   }
 
-  void editProduct2(Product product, String id) async {
+  Future<void> editProduct2(Product product, String id) async {
     final options = SetOptions(merge: true);
     await FirebaseFirestore.instance
         .collection('apps')

@@ -9,7 +9,6 @@ import 'package:jdarwish_dashboard_web/views/login.dart';
 import 'package:jdarwish_dashboard_web/views/unknown_Route_page.dart';
 
 void main() {
-  print('Hi');
   runApp(MyApp());
 }
 

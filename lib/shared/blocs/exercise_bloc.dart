@@ -25,6 +25,10 @@ class ExerciseBloc {
 
     List<Future> futures = [];
     for (var p in programDocs.docs) {
+      if (exercisePrograms.where((prog) => prog.id == p.id).isNotEmpty) {
+        // we already did this. yikes race conditions
+        return;
+      }
       Program program = Program.fromJson(p.data())..id = p.id;
       exercisePrograms.add(program);
 
