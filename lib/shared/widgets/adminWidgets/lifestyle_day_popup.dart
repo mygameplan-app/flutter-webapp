@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_day_picsbloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,9 +17,9 @@ class LifestyleDaysPopup extends StatefulWidget {
   final String id;
   LifestyleDaysPopup(
       {this.lifestyleday,
-        @required this.count,
-        @required this.popUpFunctions,
-        @required this.id});
+      @required this.count,
+      @required this.popUpFunctions,
+      @required this.id});
 
   MyLifestyleDaysPopup createState() => MyLifestyleDaysPopup();
 }
@@ -30,8 +30,8 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
   String title = "";
   String description = "";
   bool isLoading = false;
-  DaysPicsBloc daysPicsBloc = DaysPicsBloc();
   Image image;
+  ImageFileHolder imageFileHolder;
   bool imageChanged = false;
 
   final titleController = TextEditingController();
@@ -50,7 +50,6 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
   _setUpFunction() {
     if (widget.popUpFunctions == PopUpFunctions.edit) {
       image = Image.network(widget.lifestyleday.imageUrl);
-      daysPicsBloc.image = image;
       titleController.text = widget.lifestyleday.title;
 
       descriptionController.text = widget.lifestyleday.subtitle;
@@ -62,8 +61,8 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
         barrierDismissible: false,
         context: (context),
         builder: (
-            BuildContext context,
-            ) {
+          BuildContext context,
+        ) {
           return AlertDialog(
             backgroundColor: Colors.black26,
             content: Container(
@@ -125,25 +124,26 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
                 ),
                 image != null
                     ? Container(
-                  padding: EdgeInsets.only(top: 15),
-                  child: image,
-                  width: 150,
-                  height: 150,
-                )
+                        padding: EdgeInsets.only(top: 15),
+                        child: image,
+                        width: 150,
+                        height: 150,
+                      )
                     : Container(),
                 Container(
                   height: 40,
                   width: 140,
                   padding: EdgeInsets.only(top: 15),
                   decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await NutritionDaysPicsBloc().uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -169,7 +169,8 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
                 isLoading = true;
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await NutritionDaysPicsBloc().uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

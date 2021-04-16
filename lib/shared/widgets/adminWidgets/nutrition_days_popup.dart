@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_day_picsbloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,15 +30,14 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
   String title = "";
   String description = "";
   bool isLoading = false;
-  DaysPicsBloc daysPicsBloc = DaysPicsBloc();
   Image image;
+  ImageFileHolder imageFileHolder;
   bool imageChanged = false;
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
   NutritionBloc nutritionBloc = NutritionBloc();
-  NutritionDaysPicsBloc nutritionDaysPicsBloc = NutritionDaysPicsBloc();
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -51,7 +50,6 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
   _setUpFunction() {
     if (widget.popUpFunctions == PopUpFunctions.edit) {
       image = Image.network(widget.nutritionday.imageUrl);
-      daysPicsBloc.image = image;
       titleController.text = widget.nutritionday.title;
 
       descriptionController.text = widget.nutritionday.subtitle;
@@ -141,10 +139,11 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await nutritionDaysPicsBloc.uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -170,7 +169,8 @@ class MyNutritionDaysPopup extends State<NutritionDaysPopup> {
                 isLoading = true;
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await nutritionDaysPicsBloc.uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

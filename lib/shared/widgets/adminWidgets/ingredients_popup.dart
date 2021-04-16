@@ -1,13 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/ingredients_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,13 +19,14 @@ class IngredientsPopup extends StatefulWidget {
   final NutritionProgram nutritionProgram;
   final Meal meal;
   final Ingredient ingredient;
-  IngredientsPopup(
-      {this.nutritionday,
-      @required this.count,
-      @required this.popUpFunctions,
-      @required this.nutritionProgram,
-      @required this.meal,
-      this.ingredient});
+  IngredientsPopup({
+    this.nutritionday,
+    @required this.count,
+    @required this.popUpFunctions,
+    @required this.nutritionProgram,
+    @required this.meal,
+    this.ingredient,
+  });
 
   MyIngredientsPopup createState() => MyIngredientsPopup();
 }
@@ -37,11 +39,11 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
   bool isLoading = false;
 
   Image image;
+  ImageFileHolder imageFileHolder;
   bool imageChanged = false;
   final titleController = TextEditingController();
 
   NutritionBloc nutritionBloc = NutritionBloc();
-  IngredientsPicsBloc ingredientsPicsBloc = IngredientsPicsBloc();
 
   double multiplier() {
     if (MediaQuery.of(context).size.width >
@@ -137,10 +139,11 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await ingredientsPicsBloc.uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -165,7 +168,8 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                 _loadingDialog(context);
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await ingredientsPicsBloc.uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

@@ -1,14 +1,16 @@
 import 'dart:async';
-
 import 'dart:html' as html;
 import 'dart:html';
+
+import 'package:firebase/firebase.dart' as fb;
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_whisperer/image_whisperer.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 
 class ImageUploader {
-  Future<ImageFileHolder> getMobileImage() async {
+  static Future<ImageFileHolder> _getMobileImage() async {
     ImageFileHolder imageFileHolder = ImageFileHolder();
     final completer = Completer<List<String>>();
     final html.InputElement input = html.document.createElement('input');
@@ -41,7 +43,7 @@ class ImageUploader {
     return imageFileHolder;
   }
 
-  Future<ImageFileHolder> getDesktopImage() {
+  static Future<ImageFileHolder> _getDesktopImage() {
     final completer = Completer<ImageFileHolder>();
     ImageFileHolder imageFileHolder = ImageFileHolder();
     html.InputElement uploadInput = html.FileUploadInputElement()
@@ -66,5 +68,39 @@ class ImageUploader {
     });
 
     return completer.future;
+  }
+
+  static Future<ImageFileHolder> uploadImageToDevice() async {
+    if (Get.context.isPhone || Get.context.isTablet) {
+      return await _getMobileImage();
+    } else {
+      return await _getDesktopImage();
+    }
+  }
+
+  static Future<String> uploadFileToCloudStorage(File file) async {
+    final filePath = 'images/${DateTime.now()}.png';
+
+    if (file == null) {
+      return "";
+    } else {
+      fb.StorageReference reference = fb
+          .storage()
+          .refFromURL('gs://mygameplan-4de84.appspot.com')
+          .child(filePath);
+
+      fb.UploadTaskSnapshot uploadTaskSnapshot = await reference
+          .put(
+            file,
+            fb.UploadMetadata(
+              contentType: 'image/png',
+              cacheControl: 'public,max-age=3600,s-maxage=3600',
+            ),
+          )
+          .future;
+
+      var imageUri = await uploadTaskSnapshot.ref.getDownloadURL();
+      return imageUri.toString();
+    }
   }
 }

@@ -1,10 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/product.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -32,12 +33,12 @@ class MyProductPopup extends State<ProductPopup> {
   bool imageChanged = false;
   String link = "";
   Image image;
+  ImageFileHolder imageFileHolder;
   final priceController = TextEditingController();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final linkController = TextEditingController();
   ProductBloc product2bloc = ProductBloc();
-  ImageUtils imageUtils = ImageUtils();
 
   double multiplier() {
     if (MediaQuery.of(context).size.width >
@@ -153,10 +154,11 @@ class MyProductPopup extends State<ProductPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await imageUtils.uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -181,7 +183,8 @@ class MyProductPopup extends State<ProductPopup> {
                 _loadingDialog(context);
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await imageUtils.uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

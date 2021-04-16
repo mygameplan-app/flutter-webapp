@@ -1,12 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/lifestyle_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,12 +37,11 @@ class _LifestylePopupState extends State<LifestylePopup> {
   bool isLoading = false;
   bool imageChanged = false;
   Image image;
+  ImageFileHolder imageFileHolder;
 
   final titleController = TextEditingController();
   final subtitleController = TextEditingController();
   final videoUrlController = TextEditingController();
-
-  ImageUtils imageUtils = ImageUtils();
 
   double multiplier() {
     if (MediaQuery.of(context).size.width >
@@ -152,10 +152,10 @@ class _LifestylePopupState extends State<LifestylePopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await imageUtils.uploadImage();
+                        imageFileHolder = await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -180,7 +180,7 @@ class _LifestylePopupState extends State<LifestylePopup> {
                 _loadingDialog(context);
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await imageUtils.uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/days_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,12 +32,12 @@ class MyDaysPopup extends State<DaysPopup> {
   bool isLoading = false;
   bool imageChanged = false;
   Image image;
+  ImageFileHolder imageFileHolder;
 
   final titleController = TextEditingController();
   final subtitleController = TextEditingController();
 
   ExerciseBloc exerciseBloc = ExerciseBloc();
-  DaysPicsBloc daysPicsBloc = DaysPicsBloc();
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -139,9 +140,10 @@ class MyDaysPopup extends State<DaysPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await daysPicsBloc.uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
-                          image = image;
+                          image = imageFileHolder.image;
                           imageChanged = true;
                         });
                       },
@@ -166,7 +168,8 @@ class MyDaysPopup extends State<DaysPopup> {
                 isLoading = true;
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await daysPicsBloc.uploadToFirebase();
+                  imageURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

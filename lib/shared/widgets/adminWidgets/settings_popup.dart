@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/background_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/image_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/logo_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/product_bloc.dart';
-import 'package:uuid/uuid.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:get/get.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingsPopup extends StatefulWidget {
   MySettingsPopup createState() => MySettingsPopup();
@@ -17,9 +15,12 @@ class MySettingsPopup extends State<SettingsPopup> {
   var isLoading = false.obs;
   Image logoImage;
   Image backgroundImage;
+
+  ImageFileHolder logoHolder;
+  ImageFileHolder backgroundHolder;
+
   AppBloc appBloc = AppBloc();
-  BackgroundBloc backgroundBloc = BackgroundBloc();
-  LogoBloc logoBloc = LogoBloc();
+
   double multiplier() {
     if (MediaQuery.of(context).size.width >
         MediaQuery.of(context).size.height) {
@@ -108,10 +109,10 @@ class MySettingsPopup extends State<SettingsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        logoImage = await logoBloc.uploadImage();
+                        logoHolder = await ImageUploader.uploadImageToDevice();
 
                         setState(() {
-                          logoImage = logoImage;
+                          logoImage = logoHolder.image;
                         });
                       },
                       child: Text('Change Logo',
@@ -136,10 +137,11 @@ class MySettingsPopup extends State<SettingsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        backgroundImage = await backgroundBloc.uploadImage();
+                        backgroundHolder =
+                            await ImageUploader.uploadImageToDevice();
 
                         setState(() {
-                          backgroundImage = backgroundImage;
+                          backgroundImage = backgroundHolder.image;
                         });
                       },
                       child: Text('Change Background',
@@ -160,8 +162,11 @@ class MySettingsPopup extends State<SettingsPopup> {
                 Navigator.pop(context);
                 _loadingDialog(context);
 
-                String backgroundRef = await backgroundBloc.uploadToFirebase();
-                String logoRef = await logoBloc.uploadToFirebase();
+                String backgroundRef =
+                    await ImageUploader.uploadFileToCloudStorage(
+                        backgroundHolder.file);
+                String logoRef = await ImageUploader.uploadFileToCloudStorage(
+                    logoHolder.file);
 
                 await appBloc.setAppData(backgroundRef, logoRef);
                 int count = 0;

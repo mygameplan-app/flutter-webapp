@@ -1,13 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/meal_pics_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/nutrition_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -38,6 +39,7 @@ class MyMealsPopup extends State<MealsPopup> {
   bool isLoading = false;
   bool imageChanged = false;
   Image image;
+  ImageFileHolder imageFileHolder;
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -45,8 +47,6 @@ class MyMealsPopup extends State<MealsPopup> {
   final videoUrlController = TextEditingController();
 
   NutritionBloc nutritionBloc = NutritionBloc();
-
-  MealPicsBloc mealsPicsBloc = MealPicsBloc();
 
   double multiplier() {
     if (MediaQuery.of(context).size.width >
@@ -166,10 +166,11 @@ class MyMealsPopup extends State<MealsPopup> {
                 child: MaterialButton(
                     color: Colors.grey,
                     onPressed: () async {
-                      image = await mealsPicsBloc.uploadImage();
+                      imageFileHolder =
+                          await ImageUploader.uploadImageToDevice();
                       setState(() {
                         imageChanged = true;
-                        image = image;
+                        image = imageFileHolder.image;
                       });
                     },
                     child: Text('Choose Image',
@@ -194,7 +195,8 @@ class MyMealsPopup extends State<MealsPopup> {
               _loadingDialog(context);
               String imageURL = "";
               if (imageChanged) {
-                imageURL = await mealsPicsBloc.uploadToFirebase();
+                imageURL = await ImageUploader.uploadFileToCloudStorage(
+                    imageFileHolder.file);
               }
 
               if (imageURL != "") {

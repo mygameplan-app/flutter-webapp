@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/exercise_bloc.dart';
-import 'package:jdarwish_dashboard_web/shared/blocs/exercise_pic_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
+import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,12 +18,13 @@ class ExercisePopup extends StatefulWidget {
   final PopUpFunctions popUpFunctions;
   final Exercise exercise;
 
-  ExercisePopup(
-      {@required this.trainingday,
-      this.exercise,
-      @required this.count,
-      @required this.program,
-      @required this.popUpFunctions});
+  ExercisePopup({
+    @required this.trainingday,
+    this.exercise,
+    @required this.count,
+    @required this.program,
+    @required this.popUpFunctions,
+  });
 
   MyExercisePopup createState() => MyExercisePopup();
 }
@@ -35,13 +37,13 @@ class MyExercisePopup extends State<ExercisePopup> {
   bool isLoading = false;
   bool imageChanged = false;
   Image image;
+  ImageFileHolder imageFileHolder;
 
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final videoUrlController = TextEditingController();
 
   ExerciseBloc exerciseBloc = ExerciseBloc();
-  ExercisePicsBloc exercisePicsBloc = ExercisePicsBloc();
 
   double multiplier() {
     if (MediaQuery.of(context).size.width >
@@ -153,10 +155,11 @@ class MyExercisePopup extends State<ExercisePopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        image = await exercisePicsBloc.uploadImage();
+                        imageFileHolder =
+                            await ImageUploader.uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
-                          image = image;
+                          image = imageFileHolder.image;
                         });
                       },
                       child: Text('Choose Image',
@@ -181,7 +184,8 @@ class MyExercisePopup extends State<ExercisePopup> {
                 _loadingDialog(context);
                 String refURL = "";
                 if (imageChanged) {
-                  refURL = await exercisePicsBloc.uploadToFirebase();
+                  refURL = await ImageUploader.uploadFileToCloudStorage(
+                      imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {
