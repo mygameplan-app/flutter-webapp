@@ -7,7 +7,7 @@ import 'package:jdarwish_dashboard_web/shared/models/exercise.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/image_utils.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -155,8 +155,7 @@ class MyExercisePopup extends State<ExercisePopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        imageFileHolder =
-                            await ImageUploader.uploadImageToDevice();
+                        imageFileHolder = await uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
                           image = imageFileHolder.image;
@@ -184,7 +183,7 @@ class MyExercisePopup extends State<ExercisePopup> {
                 _loadingDialog(context);
                 String refURL = "";
                 if (imageChanged) {
-                  refURL = await ImageUploader.uploadFileToCloudStorage(
+                  refURL = await uploadFileToCloudStorage(
                       imageFileHolder.file);
                 }
 

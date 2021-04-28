@@ -6,7 +6,7 @@ import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
-import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/image_utils.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -139,8 +139,7 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        imageFileHolder =
-                            await ImageUploader.uploadImageToDevice();
+                        imageFileHolder = await uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
                           image = imageFileHolder.image;
@@ -169,8 +168,8 @@ class MyLifestyleDaysPopup extends State<LifestyleDaysPopup> {
                 isLoading = true;
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await ImageUploader.uploadFileToCloudStorage(
-                      imageFileHolder.file);
+                  imageURL =
+                      await uploadFileToCloudStorage(imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

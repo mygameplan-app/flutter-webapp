@@ -8,7 +8,7 @@ import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
-import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/image_utils.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:uuid/uuid.dart';
 
@@ -139,8 +139,7 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        imageFileHolder =
-                            await ImageUploader.uploadImageToDevice();
+                        imageFileHolder = await uploadImageToDevice();
                         setState(() {
                           imageChanged = true;
                           image = imageFileHolder.image;
@@ -168,8 +167,8 @@ class MyIngredientsPopup extends State<IngredientsPopup> {
                 _loadingDialog(context);
                 String imageURL = "";
                 if (imageChanged) {
-                  imageURL = await ImageUploader.uploadFileToCloudStorage(
-                      imageFileHolder.file);
+                  imageURL =
+                      await uploadFileToCloudStorage(imageFileHolder.file);
                 }
 
                 switch (widget.popUpFunctions) {

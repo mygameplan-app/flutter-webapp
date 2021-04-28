@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/imagefileholder.dart';
-import 'package:jdarwish_dashboard_web/shared/utils/ImageUpload.dart';
+import 'package:jdarwish_dashboard_web/shared/utils/image_utils.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingsPopup extends StatefulWidget {
@@ -109,7 +109,7 @@ class MySettingsPopup extends State<SettingsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        logoHolder = await ImageUploader.uploadImageToDevice();
+                        logoHolder = await uploadImageToDevice();
 
                         setState(() {
                           logoImage = logoHolder.image;
@@ -137,8 +137,7 @@ class MySettingsPopup extends State<SettingsPopup> {
                   child: MaterialButton(
                       color: Colors.grey,
                       onPressed: () async {
-                        backgroundHolder =
-                            await ImageUploader.uploadImageToDevice();
+                        backgroundHolder = await uploadImageToDevice();
 
                         setState(() {
                           backgroundImage = backgroundHolder.image;
@@ -163,10 +162,9 @@ class MySettingsPopup extends State<SettingsPopup> {
                 _loadingDialog(context);
 
                 String backgroundRef =
-                    await ImageUploader.uploadFileToCloudStorage(
-                        backgroundHolder.file);
-                String logoRef = await ImageUploader.uploadFileToCloudStorage(
-                    logoHolder.file);
+                    await uploadFileToCloudStorage(backgroundHolder.file);
+                String logoRef =
+                    await uploadFileToCloudStorage(logoHolder.file);
 
                 await appBloc.setAppData(backgroundRef, logoRef);
                 int count = 0;
