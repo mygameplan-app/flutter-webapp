@@ -8,9 +8,9 @@ import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/lifestyle_program_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/lifestyle_program_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/lifestyle_admin.dart';
 import 'package:uuid/uuid.dart';
@@ -147,7 +147,8 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
 
             lifestylePrograms = querySnapshot.docs
                 .map<LifestyleProgram>((lifestyleprogram2) =>
-                    LifestyleProgram.fromJson(lifestyleprogram2.data())..id = lifestyleprogram2.id)
+                    LifestyleProgram.fromJson(lifestyleprogram2.data())
+                      ..id = lifestyleprogram2.id)
                 .toList();
 
             return Column(children: [
@@ -203,7 +204,8 @@ class MyLifestyleCategoriesAdmin extends State<LifestyleCategoriesAdmin> {
             .collection('lifestyle'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(LifestyleProgram.fromJson(doc.data())..id = doc.id, index);
+          return getlistTile(
+              LifestyleProgram.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

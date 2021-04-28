@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/settings_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/settings_popup.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 
 class AdminPage extends StatefulWidget {

@@ -9,8 +9,8 @@ import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/lifestyle_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/lifestyle_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:uuid/uuid.dart';
 

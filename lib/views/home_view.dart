@@ -6,7 +6,7 @@ import 'package:jdarwish_dashboard_web/shared/blocs/app_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/message_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/blocs/user_bloc.dart';
 import 'package:jdarwish_dashboard_web/shared/models/customer.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/drawer.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/drawer.dart';
 import 'package:jdarwish_dashboard_web/views/pages/goals_page.dart';
 import 'package:jdarwish_dashboard_web/views/pages/profile_page.dart';
 import 'package:jdarwish_dashboard_web/views/tabs/lifestyle_tab.dart';

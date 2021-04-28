@@ -9,9 +9,9 @@ import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/program.dart';
 import 'package:jdarwish_dashboard_web/shared/models/training_day.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/days_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/days_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:uuid/uuid.dart';
 

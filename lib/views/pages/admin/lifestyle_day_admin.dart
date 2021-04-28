@@ -8,12 +8,11 @@ import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/lifestyle_program.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/days_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/lifestyle_day_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/days_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/lifestyle_day_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
-import 'package:jdarwish_dashboard_web/views/pages/admin/meals_admin.dart';
 import 'package:uuid/uuid.dart';
 
 import 'lifestyle_admin.dart';
@@ -34,7 +33,8 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     lifestyleDays = querySnapshot.docs
-        .map<LifestyleDay>((day) => LifestyleDay.fromJson(day.data())..id = day.id)
+        .map<LifestyleDay>(
+            (day) => LifestyleDay.fromJson(day.data())..id = day.id)
         .toList();
 
     List<Widget> containers = [];
@@ -73,11 +73,13 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
         child: ListTile(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LifestyleAdmin(
-                        lifestyleDay: day,
-                        lifestyleProgram: widget.lifestyleProgram),),);
+              context,
+              MaterialPageRoute(
+                builder: (context) => LifestyleAdmin(
+                    lifestyleDay: day,
+                    lifestyleProgram: widget.lifestyleProgram),
+              ),
+            );
           },
           leading: SizedBox(
             width: 150,
@@ -95,7 +97,7 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
                       doPopUp(result, day);
                     },
                     itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<Functions>>[
+                        <PopupMenuEntry<Functions>>[
                       const PopupMenuItem<Functions>(
                         value: Functions.edit,
                         child: Text('Edit'),
@@ -171,7 +173,7 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
         LifestyleDay newlifestyleDay = lifestyleDay;
         newlifestyleDay.id = Uuid().v1();
         newlifestyleDay.order =
-        lifestyleDays != null ? lifestyleDays.length : 0;
+            lifestyleDays != null ? lifestyleDays.length : 0;
         print(lifestyleDays.length);
         LifestyleBloc()
             .addLifestyleDay(newlifestyleDay, widget.lifestyleProgram.id);
@@ -234,10 +236,10 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
                       textColor: Colors.white,
                       onPressed: () async {
                         LifestyleDaysPopup lifestyleDaysPopup =
-                        LifestyleDaysPopup(
-                            popUpFunctions: PopUpFunctions.add,
-                            count: lifestyleDays.length,
-                            id: widget.lifestyleProgram.id);
+                            LifestyleDaysPopup(
+                                popUpFunctions: PopUpFunctions.add,
+                                count: lifestyleDays.length,
+                                id: widget.lifestyleProgram.id);
                         await Navigator.push(
                             context,
                             TransparentRoute(
@@ -304,13 +306,13 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
         actions: [
           isReordering
               ? TextButton(
-            child: Text('Save'),
-            onPressed: () {
-              setState(() {
-                isReordering = false;
-              });
-            },
-          )
+                  child: Text('Save'),
+                  onPressed: () {
+                    setState(() {
+                      isReordering = false;
+                    });
+                  },
+                )
               : Container()
         ],
         elevation: 0,
@@ -329,8 +331,8 @@ class MyLifestyleDaysAdmin extends State<LifestyleDaysAdmin> {
         isReordering
             ? SafeArea(child: reorderable())
             : ListView(
-          children: [div1(), daysFetcher()],
-        )
+                children: [div1(), daysFetcher()],
+              )
       ]),
     );
   }

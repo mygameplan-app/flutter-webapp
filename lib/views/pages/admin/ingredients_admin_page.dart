@@ -10,10 +10,10 @@ import 'package:jdarwish_dashboard_web/shared/models/ingredient.dart';
 import 'package:jdarwish_dashboard_web/shared/models/meal.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_day.dart';
 import 'package:jdarwish_dashboard_web/shared/models/nutrition_program.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/exercise_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/ingredients_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/exercise_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/ingredients_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:uuid/uuid.dart';
@@ -41,7 +41,8 @@ class MyIngredientsAdmin extends State<IngredientsAdmin> {
   //ListView
   Column loadListView(QuerySnapshot querySnapshot, String id) {
     ingredients = querySnapshot.docs
-        .map<Ingredient>((ingredient) => Ingredient.fromJson(ingredient.data())..id = ingredient.id)
+        .map<Ingredient>((ingredient) =>
+            Ingredient.fromJson(ingredient.data())..id = ingredient.id)
         .toList();
 
     List<Widget> containers = [];
@@ -302,7 +303,8 @@ class MyIngredientsAdmin extends State<IngredientsAdmin> {
             .collection('ingredients'),
         indexKey: 'order',
         itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
-          return getlistTile(Ingredient.fromJson(doc.data())..id = doc.id, index);
+          return getlistTile(
+              Ingredient.fromJson(doc.data())..id = doc.id, index);
         });
   }
 

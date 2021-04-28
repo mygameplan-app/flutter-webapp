@@ -7,9 +7,9 @@ import 'package:jdarwish_dashboard_web/shared/blocs/product_categories_bloc.dart
 import 'package:jdarwish_dashboard_web/shared/constants.dart';
 import 'package:jdarwish_dashboard_web/shared/models/enums.dart';
 import 'package:jdarwish_dashboard_web/shared/models/product_category.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_category_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/product_popup.dart';
-import 'package:jdarwish_dashboard_web/shared/widgets/adminWidgets/reorderableFirebaseList.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_category_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/product_popup.dart';
+import 'package:jdarwish_dashboard_web/shared/widgets/admin/reorderableFirebaseList.dart';
 import 'package:jdarwish_dashboard_web/shared/widgets/long_button.dart';
 import 'package:jdarwish_dashboard_web/views/pages/admin/product_detail_admin.dart';
 import 'package:uuid/uuid.dart';
